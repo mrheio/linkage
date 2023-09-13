@@ -19,7 +19,7 @@ const methodColorMapper = {
 const log = (request: NextRequest) => {
 	const date = new Date(Date.now()).toLocaleString('en-GB');
 	let method = request.method;
-	method = `${methodColorMapper[method]}${method}\x1b[0m`;
+	method = `${(methodColorMapper as any)[method]}${method}\x1b[0m`;
 	const url = request.url;
 
 	console.log(
