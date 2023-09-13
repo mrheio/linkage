@@ -39,7 +39,15 @@ export default class ApiSuccess extends ApiResponse {
 		if (!session) {
 			return new ApiSuccess('No user session found');
 		}
-
 		return new ApiSuccess('User session returned', { payload: session });
+	}
+
+	static refreshSession(data: { accessToken: string; refreshToken: string }) {
+		return new ApiSuccess('User session refreshed', {
+			payload: {
+				access_token: data.accessToken,
+				refresh_token: data.refreshToken,
+			},
+		});
 	}
 }

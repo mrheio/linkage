@@ -1,4 +1,5 @@
-import { SignJWT, decodeJwt as joseDecodeJwt, jwtVerify } from 'jose';
+import { SignJWT, errors, decodeJwt as joseDecodeJwt, jwtVerify } from 'jose';
+import { ApiError } from '~/api/responses';
 
 const signJwt = async (
 	payload: any,
@@ -18,8 +19,15 @@ const signJwt = async (
 };
 
 const decodeJwt = (jwt: string) => {
-	const decoded = joseDecodeJwt(jwt);
-	return decoded;
+	try {
+		const decoded = joseDecodeJwt(jwt);
+		return decoded;
+	} catch (e) {
+		if (e instanceof errors.JWTInvalid) {
+			throw ApiError.invalidJwt();
+		}
+		throw e;
+	}
 };
 
 const verifyJwt = async (jwt: string, secret: string) => {

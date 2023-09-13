@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import { signInSchema, signUpSchema } from '~/schemas';
+import { refreshSessionSchema, signInSchema, signUpSchema } from '~/schemas';
 import { Config } from '../../config';
 import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
@@ -78,9 +78,40 @@ const signIn = async (data: unknown) => {
 	return { accessToken, refreshToken };
 };
 
-const getSession = async () => {};
+const refreshSession = async (data: unknown) => {
+	const parsed = refreshSessionSchema.safeParse(data);
+
+	if (!parsed.success) {
+		throw ApiError.zod(parsed.error);
+	}
+
+	const payload = jwtService.decodeJwt(parsed.data.refresh_token);
+
+	const result = await db
+		.select({ id: users.id, username: users.username })
+		.from(users)
+		.where(eq(users.id, payload.id));
+
+	if (!result.length) {
+		throw ApiError.userNotFound();
+	}
+
+	const user = result[0];
+
+	const newAccessToken = await jwtService.signJwt(
+		{ id: user.id, username: user.username },
+		{ expirationTime: '30s', secret: Config.JWT_SECRET },
+	);
+	const newRefreshToken = await jwtService.signJwt(
+		{ id: user.id },
+		{ expirationTime: '30d', secret: Config.JWT_SECRET },
+	);
+
+	return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+};
 
 export const authService = {
 	signUp,
 	signIn,
+	refreshSession,
 };

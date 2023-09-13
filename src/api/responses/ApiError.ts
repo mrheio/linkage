@@ -36,4 +36,8 @@ export default class ApiError extends ApiResponse {
 	static userNotFound() {
 		return new ApiError('There is no user with these credentials');
 	}
+
+	static invalidJwt() {
+		return new ApiError('Provided JWT has invalid format');
+	}
 }

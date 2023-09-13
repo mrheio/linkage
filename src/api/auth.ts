@@ -48,9 +48,24 @@ export const signOut = async (request: Request) => {
 	return response;
 };
 
+export const refreshSession = async (request: NextRequest) => {
+	const data = await request.json();
+
+	try {
+		const tokens = await authService.refreshSession(data);
+		const response = ApiSuccess.refreshSession(tokens).toNextResponse();
+
+		response.cookies.set(CookieKey.AccessToken, tokens.accessToken);
+		response.cookies.set(CookieKey.RefreshToken, tokens.refreshToken);
+
+		return response;
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};
+
 export const getSession = async (request: NextRequest) => {
 	const accessToken = request.cookies.get(CookieKey.AccessToken)?.value;
-	console.log({ accessToken });
 
 	if (!accessToken) {
 		return ApiSuccess.getSession().toNextResponse();
