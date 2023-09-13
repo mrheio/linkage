@@ -1,7 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import { refreshSessionSchema, signInSchema, signUpSchema } from '~/schemas';
+import {
+	Session,
+	refreshSessionSchema,
+	signInSchema,
+	signUpSchema,
+} from '~/schemas';
 import { Config } from '../../config';
 import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
@@ -85,7 +90,7 @@ const refreshSession = async (data: unknown) => {
 		throw ApiError.zod(parsed.error);
 	}
 
-	const payload = jwtService.decodeJwt(parsed.data.refresh_token);
+	const payload = jwtService.decodeJwt(parsed.data.refresh_token) as Session;
 
 	const result = await db
 		.select({ id: users.id, username: users.username })
