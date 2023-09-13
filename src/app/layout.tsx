@@ -20,7 +20,12 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<nav>
+				<nav className="container">
+					<ul>
+						<li>
+							<strong>Linkage</strong>
+						</li>
+					</ul>
 					<ul>
 						<li>
 							<Link href={ROUTES.SIGN_IN}>Sign in</Link>
