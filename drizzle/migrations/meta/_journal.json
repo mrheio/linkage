@@ -8,6 +8,13 @@
       "when": 1694587619993,
       "tag": "0000_new_loners",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1694592969181,
+      "tag": "0001_goofy_lady_deathstrike",
+      "breakpoints": true
     }
   ]
 }
