@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 
 export default abstract class ApiResponse {
-	name: string;
+	type: string;
 	status: number;
 	message: string;
 
-	constructor(message: string, status: number) {
-		this.name = this.constructor.name;
+	constructor(type: string, message: string, status: number) {
+		this.type = type;
 		this.status = status;
 		this.message = message;
 	}

@@ -8,8 +8,15 @@ export default class ApiError extends ApiResponse {
 		message: string,
 		init?: { status?: number; details?: unknown },
 	) {
-		super(message, init?.status ?? 400);
+		super('error', message, init?.status ?? 400);
 		this.details = init?.details ?? null;
+	}
+
+	static returnOrThrow(e: unknown) {
+		if (e instanceof ApiError) {
+			return e;
+		}
+		throw e;
 	}
 
 	static zod(validationError: ZodError) {
@@ -26,11 +33,7 @@ export default class ApiError extends ApiResponse {
 		return new ApiError('This username is taken');
 	}
 
-	static returnOrThrow(e: unknown) {
-		if (e instanceof ApiError) {
-			return e;
-		}
-
-		throw e;
+	static userNotFound() {
+		return new ApiError('There is no user with these credentials');
 	}
 }
