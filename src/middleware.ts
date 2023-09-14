@@ -123,7 +123,7 @@ const authMiddleware = (request: NextRequest, response: NextResponse) => {
 export const middleware = async (request: NextRequest) => {
 	const response = NextResponse.next();
 
-	const nextResponse = withMiddleware(request, response, [
+	const nextResponse = await withMiddleware(request, response, [
 		logMiddleware,
 		sessionMiddleware,
 		authMiddleware,
