@@ -63,13 +63,10 @@ const sessionMiddleware = async (
 		return;
 	}
 
-	console.log('Session middleware');
-
 	const accessToken = request.cookies.get(CookieKey.AccessToken)?.value;
 	const refreshToken = request.cookies.get(CookieKey.RefreshToken)?.value;
 
 	if (!accessToken || !refreshToken) {
-		console.log('No session. Continue');
 		return;
 	}
 
@@ -113,12 +110,10 @@ const authMiddleware = (request: NextRequest, response: NextResponse) => {
 	const accessToken = request.cookies.get(CookieKey.AccessToken)?.value;
 
 	if (!accessToken && isProtectedRoute(route)) {
-		console.log('No session available. Redirecting to Sign In');
 		return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
 	}
 
 	if (accessToken && isAuthRoute(route)) {
-		console.log('Session available. Redirecting to Home');
 		return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
 	}
 
