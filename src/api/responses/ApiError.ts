@@ -35,7 +35,7 @@ export default class ApiError extends ApiResponse {
 	}
 
 	static userNotFound() {
-		return new ApiError('There is no user with these credentials', {
+		return new ApiError('No user was found', {
 			status: HTTP_STATUS_CODE.NOT_FOUND,
 		});
 	}

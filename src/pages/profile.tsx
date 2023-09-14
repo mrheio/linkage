@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { usersService } from '~/services';
 import { jwtService } from '~/services/jwt.service';
 import { CookieKey } from '~/utils';
 import { Config } from '../../config';
@@ -10,17 +11,43 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 		return { props: {} };
 	}
 
-	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
-	return { props: { session: jwt.payload } };
+	const { payload } = await jwtService.verifyJwt(
+		accessToken,
+		Config.JWT_SECRET,
+	);
+
+	const user = await usersService.getUser(payload.id);
+
+	return { props: { user: JSON.parse(JSON.stringify(user)) } };
 };
 
 const Profile = ({
-	session,
+	user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	return (
 		<div>
-			<h1>Profile page</h1>
-			<p>{JSON.stringify(session)}</p>
+			<h1>
+				{user.username} - {user.email}
+			</h1>
+			<p>
+				Member since:{' '}
+				<strong>{new Date(user.created_at).toLocaleString()}</strong>
+			</p>
+			<p>
+				Last updated:{' '}
+				<strong>{new Date(user.updated_at).toLocaleString()}</strong>
+			</p>
+			<p>
+				Deleted at:{' '}
+				<strong>
+					{user.deleted_at
+						? new Date(user.deleted_at).toLocaleString()
+						: 'not yet'}
+				</strong>
+			</p>
+			<p>
+				Role: <strong>{user.role}</strong>
+			</p>
 		</div>
 	);
 };
