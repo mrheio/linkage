@@ -1,21 +1,17 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { jwtService } from '~/services/jwt.service';
+import { CookieKey } from '~/utils';
 import { Config } from '../../config';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const { req, res } = context;
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+	const accessToken = req.cookies[CookieKey.AccessToken];
 
-	const result = await fetch(`${Config.API_URL}/auth/session`, {
-		headers: { cookie: req.headers.cookie ?? '' },
-	});
-
-	if (!result.ok) {
+	if (!accessToken) {
 		return { props: {} };
 	}
 
-	const json = await result.json();
-	const session = json.payload;
-
-	return { props: { session } };
+	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
+	return { props: { session: jwt.payload } };
 };
 
 const Profile = ({
