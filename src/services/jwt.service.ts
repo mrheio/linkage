@@ -36,8 +36,22 @@ const verifyJwt = async (jwt: string, secret: string) => {
 	return decoded;
 };
 
+const isJwtExpired = (jwt: string) => {
+	const decoded = decodeJwt(jwt);
+	const expirationTime = decoded.exp;
+
+	if (!expirationTime) {
+		return false;
+	}
+
+	const timeDiff = expirationTime * 1000 - Date.now();
+
+	return timeDiff < 0;
+};
+
 export const jwtService = {
 	signJwt,
 	verifyJwt,
 	decodeJwt,
+	isJwtExpired,
 };

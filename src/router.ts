@@ -4,3 +4,10 @@ export const ROUTES = {
 	SIGN_UP: '/sign-up',
 	PROFILE: '/profile',
 };
+
+const AUTH_ROUTES = [ROUTES.SIGN_IN, ROUTES.SIGN_UP];
+const PROTECTED_ROUTES = [ROUTES.PROFILE];
+
+export const isProtectedRoute = (route: string) =>
+	PROTECTED_ROUTES.includes(route);
+export const isAuthRoute = (route: string) => AUTH_ROUTES.includes(route);
