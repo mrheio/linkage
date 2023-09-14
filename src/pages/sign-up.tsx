@@ -1,55 +1,32 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import {
-	ChangeEventHandler,
-	FormEventHandler,
-	useEffect,
-	useState,
-} from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSignUp } from '~/hooks';
 import { ROUTES } from '~/router';
+import { signUpSchema } from '~/schemas';
 
 const SignUp = () => {
 	const router = useRouter();
-	const [fields, setFields] = useState({
-		email: '',
-		username: '',
-		password: '',
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		defaultValues: { email: '', username: '', password: '' },
+		resolver: zodResolver(signUpSchema),
 	});
-	const [errors, setErrors] = useState<{
-		email: string[] | null;
-		username: string[] | null;
-		password: string[] | null;
-	}>({ email: null, username: null, password: null });
-	const [formError, setFormError] = useState<string | null>(null);
 	const {
 		mutate: signUp,
 		isLoading: isSignUpRunning,
 		isSuccess: isSignUpSuccess,
-		error: signUpError,
+		error,
 	} = useSignUp();
 
-	const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-		setFields((prev) => ({
-			...prev,
-			[event.target.name]: event.target.value,
-		}));
-	};
-
-	const handleSignUp: FormEventHandler<HTMLFormElement> = async (event) => {
-		event.preventDefault();
-		signUp(fields);
-	};
-
-	useEffect(() => {
-		const error = signUpError as any;
-		setErrors(
-			error?.details?.fieldErrors
-				? { ...error?.details?.fieldErrors }
-				: { email: null, username: null, password: null },
-		);
-		setFormError(error ? error.message : null);
-	}, [signUpError]);
+	const handleSignUp = handleSubmit((data) => {
+		signUp(data);
+	});
 
 	useEffect(() => {
 		if (isSignUpSuccess) {
@@ -64,40 +41,34 @@ const SignUp = () => {
 				<label htmlFor="email">Email</label>
 				<input
 					id="email"
-					name="email"
-					value={fields.email}
-					onChange={handleInputChange}
-					aria-invalid={errors.email ? true : undefined}
+					aria-invalid={errors.email ? 'true' : undefined}
+					{...register('email')}
 				/>
-				<small>{errors.email?.[0]}</small>
+				<small>{errors.email?.message}</small>
 			</div>
 			<div>
 				<label htmlFor="username">Username</label>
 				<input
 					id="username"
-					name="username"
-					value={fields.username}
-					onChange={handleInputChange}
-					aria-invalid={errors.username ? true : undefined}
+					aria-invalid={errors.username ? 'true' : undefined}
+					{...register('username')}
 				/>
-				<small>{errors.username?.[0]}</small>
+				<small>{errors.username?.message}</small>
 			</div>
 			<div>
 				<label htmlFor="password">Password</label>
 				<input
 					id="password"
-					name="password"
-					value={fields.password}
-					onChange={handleInputChange}
-					aria-invalid={errors.password ? true : undefined}
+					aria-invalid={errors.password ? 'true' : undefined}
+					{...register('password')}
 				/>
-				<small>{errors.password?.[0]}</small>
+				<small>{errors.username?.message}</small>
 			</div>
 			<button type="submit" aria-busy={isSignUpRunning}>
 				Create account
 			</button>
 			<div>
-				<small>{formError}</small>
+				<small>{(error as any)?.message}</small>
 			</div>
 			<Link href={ROUTES.SIGN_IN}>
 				Already have an account? Enter your account here

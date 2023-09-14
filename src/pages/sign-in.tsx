@@ -1,65 +1,38 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import {
-	ChangeEventHandler,
-	FormEventHandler,
-	useEffect,
-	useState,
-} from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSignIn } from '~/hooks';
 import { ROUTES } from '~/router';
+import { signInSchema } from '~/schemas';
 
 const SignIn = () => {
 	const router = useRouter();
-	const [fields, setFields] = useState({ username: '', password: '' });
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSuccess, setIsSuccess] = useState(false);
-	const [errors, setErrors] = useState<{
-		username: string[] | null;
-		password: string[] | null;
-	}>({ username: null, password: null });
-	const [formError, setFormError] = useState<string | null>(null);
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		defaultValues: { username: '', password: '' },
+		resolver: zodResolver(signInSchema),
+	});
+	const {
+		mutate: signIn,
+		isLoading: isSignInRunning,
+		isSuccess: isSignInSuccess,
+		error,
+	} = useSignIn();
 
-	const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-		setFields((prev) => ({
-			...prev,
-			[event.target.name]: event.target.value,
-		}));
-	};
-
-	const handleSignIn: FormEventHandler<HTMLFormElement> = async (event) => {
-		event.preventDefault();
-
-		setIsLoading(true);
-		setErrors({ username: null, password: null });
-		setFormError(null);
-
-		const response = await fetch(`/api/auth/sign-in`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(fields),
-		});
-
-		if (response.ok) {
-			setIsSuccess(true);
-		} else {
-			const error = await response.json();
-			if (error.details) {
-				const fieldErrors = error.details.fieldErrors;
-				setErrors({ ...fieldErrors });
-			}
-			if (!error.details) {
-				setFormError(error.message);
-			}
-		}
-
-		setIsLoading(false);
-	};
+	const handleSignIn = handleSubmit((data) => {
+		signIn(data);
+	});
 
 	useEffect(() => {
-		if (isSuccess) {
+		if (isSignInSuccess) {
 			router.reload();
 		}
-	}, [isSuccess]);
+	}, [isSignInSuccess]);
 
 	return (
 		<form onSubmit={handleSignIn}>
@@ -68,29 +41,25 @@ const SignIn = () => {
 				<label htmlFor="username">Username</label>
 				<input
 					id="username"
-					name="username"
-					value={fields.username}
-					onChange={handleInputChange}
-					aria-invalid={errors.username ? true : undefined}
+					aria-invalid={errors.username ? 'true' : undefined}
+					{...register('username')}
 				/>
-				<small>{errors.username?.[0]}</small>
+				<small>{errors.username?.message}</small>
 			</div>
 			<div>
 				<label htmlFor="password">Password</label>
 				<input
 					id="password"
-					name="password"
-					value={fields.password}
-					onChange={handleInputChange}
-					aria-invalid={errors.password ? true : undefined}
+					aria-invalid={errors.password ? 'true' : undefined}
+					{...register('password')}
 				/>
-				<small>{errors.password?.[0]}</small>
+				<small>{errors.password?.message}</small>
 			</div>
-			<button type="submit" aria-busy={isLoading}>
+			<button type="submit" aria-busy={isSignInRunning}>
 				Enter account
 			</button>
 			<div>
-				<small>{formError}</small>
+				<small>{(error as any)?.message}</small>
 			</div>
 			<Link href={ROUTES.SIGN_UP}>
 				Don&apos;t have an account? Create one here
