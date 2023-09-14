@@ -45,7 +45,7 @@ const withMiddleware = async (
 		}
 	}
 
-	return nextResponse;
+	return response;
 };
 
 const logMiddleware = (request: NextRequest, response: NextResponse) => {
@@ -128,6 +128,8 @@ export const middleware = async (request: NextRequest) => {
 		sessionMiddleware,
 		authMiddleware,
 	]);
+
+	nextResponse.headers.set('x-middleware-cache', 'no-cache');
 
 	return nextResponse;
 };
