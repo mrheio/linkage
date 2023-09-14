@@ -93,7 +93,7 @@ const SignIn = () => {
 				<small>{formError}</small>
 			</div>
 			<Link href={ROUTES.SIGN_UP}>
-				Don't have an account? Create one here
+				Don&apos;t have an account? Create one here
 			</Link>
 		</form>
 	);
