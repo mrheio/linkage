@@ -32,8 +32,16 @@ const decodeJwt = (jwt: string) => {
 
 const verifyJwt = async (jwt: string, secret: string) => {
 	const key = new TextEncoder().encode(secret);
-	const decoded = await jwtVerify(jwt, key);
-	return decoded;
+
+	try {
+		const decoded = await jwtVerify(jwt, key);
+		return decoded;
+	} catch (e) {
+		if (e instanceof errors.JWTExpired) {
+			throw ApiError.expiredJwt();
+		}
+		throw e;
+	}
 };
 
 const isJwtExpired = (jwt: string) => {

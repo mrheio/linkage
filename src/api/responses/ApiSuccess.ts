@@ -8,7 +8,7 @@ export default class ApiSuccess extends ApiResponse {
 		message: string,
 		init?: { status?: number; payload?: unknown },
 	) {
-		super('success', message, init?.status ?? 200);
+		super('success', message, init?.status ?? HTTP_STATUS_CODE.OK);
 		this.payload = init?.payload ?? null;
 	}
 

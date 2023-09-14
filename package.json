@@ -14,6 +14,7 @@
 	},
 	"dependencies": {
 		"@picocss/pico": "^1.5.10",
+		"@tanstack/react-query": "^4.35.3",
 		"@types/node": "20.6.0",
 		"@types/react": "18.2.21",
 		"@types/react-dom": "18.2.7",
@@ -36,6 +37,7 @@
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^8.0.2",
+		"@tanstack/eslint-plugin-query": "^4.34.1",
 		"@types/uuid": "^9.0.3",
 		"drizzle-kit": "^0.19.13",
 		"pg": "^8.11.3",

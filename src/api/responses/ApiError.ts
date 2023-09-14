@@ -1,4 +1,5 @@
 import { ZodError } from 'zod';
+import { HTTP_STATUS_CODE } from '../status-codes';
 import ApiResponse from './ApiResponse';
 
 export default class ApiError extends ApiResponse {
@@ -8,7 +9,7 @@ export default class ApiError extends ApiResponse {
 		message: string,
 		init?: { status?: number; details?: unknown },
 	) {
-		super('error', message, init?.status ?? 400);
+		super('error', message, init?.status ?? HTTP_STATUS_CODE.BAD_REQUEST);
 		this.details = init?.details ?? null;
 	}
 
@@ -34,10 +35,18 @@ export default class ApiError extends ApiResponse {
 	}
 
 	static userNotFound() {
-		return new ApiError('There is no user with these credentials');
+		return new ApiError('There is no user with these credentials', {
+			status: HTTP_STATUS_CODE.NOT_FOUND,
+		});
 	}
 
 	static invalidJwt() {
 		return new ApiError('Provided JWT has invalid format');
+	}
+
+	static expiredJwt() {
+		return new ApiError('Provided JWT is expired', {
+			status: HTTP_STATUS_CODE.UNAUTHORIZED,
+		});
 	}
 }

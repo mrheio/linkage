@@ -1,23 +1,27 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSession, useSignOut } from '~/hooks';
 import { ROUTES } from '~/router';
 
 const Navbar = () => {
 	const router = useRouter();
-	const [isSuccess, setIsSuccess] = useState(false);
+	const { data: session, isLoading: isSessionLoading } = useSession();
+	const {
+		mutate: signOut,
+		isLoading: isSignOutRunning,
+		isSuccess: isSignOutSuccess,
+	} = useSignOut();
 
-	const handleSignOut = async () => {
-		setIsSuccess(false);
-		await fetch('/api/auth/sign-out', { method: 'POST' });
-		setIsSuccess(true);
+	const handleSignOut = () => {
+		signOut();
 	};
 
 	useEffect(() => {
-		if (isSuccess) {
+		if (isSignOutSuccess) {
 			router.reload();
 		}
-	}, [isSuccess]);
+	}, [isSignOutSuccess]);
 
 	return (
 		<nav className="container">
@@ -38,9 +42,11 @@ const Navbar = () => {
 				<li>
 					<Link href={ROUTES.PROFILE}>Profile</Link>
 				</li>
-				<li>
-					<button onClick={handleSignOut}>Sign out</button>
-				</li>
+				{session && (
+					<li>
+						<button onClick={handleSignOut}>Sign out</button>
+					</li>
+				)}
 			</ul>
 		</nav>
 	);

@@ -49,10 +49,17 @@ export const signOut = async (request: Request) => {
 };
 
 export const refreshSession = async (request: NextRequest) => {
-	const data = await request.json();
+	const contentType = request.headers.get('Content-Type');
+	let data = request.cookies.get(CookieKey.RefreshToken)?.value;
+
+	if (contentType === 'application/json') {
+		data = await request.json();
+	}
 
 	try {
-		const tokens = await authService.refreshSession(data);
+		const tokens = await authService.refreshSession(
+			typeof data === 'object' ? data : { refresh_token: data },
+		);
 		const response = ApiSuccess.refreshSession(tokens).toNextResponse();
 
 		response.cookies.set(CookieKey.AccessToken, tokens.accessToken);
@@ -71,6 +78,10 @@ export const getSession = async (request: NextRequest) => {
 		return ApiSuccess.getSession().toNextResponse();
 	}
 
-	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
-	return ApiSuccess.getSession(jwt.payload).toNextResponse();
+	try {
+		const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
+		return ApiSuccess.getSession(jwt.payload).toNextResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
 };
