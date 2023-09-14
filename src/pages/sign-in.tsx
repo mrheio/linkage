@@ -57,7 +57,7 @@ const SignIn = () => {
 
 	useEffect(() => {
 		if (isSuccess) {
-			router.replace(ROUTES.HOME);
+			router.reload();
 		}
 	}, [isSuccess]);
 
