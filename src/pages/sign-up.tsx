@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSignUp } from '~/hooks';
 import { ROUTES } from '~/router';
@@ -17,22 +16,11 @@ const SignUp = () => {
 		defaultValues: { email: '', username: '', password: '' },
 		resolver: zodResolver(signUpSchema),
 	});
-	const {
-		mutate: signUp,
-		isLoading: isSignUpRunning,
-		isSuccess: isSignUpSuccess,
-		error,
-	} = useSignUp();
+	const { mutate: signUp, isLoading: isSignUpRunning, error } = useSignUp();
 
 	const handleSignUp = handleSubmit((data) => {
 		signUp(data);
 	});
-
-	useEffect(() => {
-		if (isSignUpSuccess) {
-			router.push(ROUTES.HOME);
-		}
-	}, [isSignUpSuccess]);
 
 	return (
 		<form onSubmit={handleSignUp}>

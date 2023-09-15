@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { useSession, useSignOut } from '~/hooks';
 import { ROUTES } from '~/router';
 
@@ -16,12 +15,6 @@ const Navbar = () => {
 	const handleSignOut = () => {
 		signOut();
 	};
-
-	useEffect(() => {
-		if (isSignOutSuccess) {
-			router.reload();
-		}
-	}, [isSignOutSuccess]);
 
 	return (
 		<nav className="container">
