@@ -12,6 +12,16 @@ export default class ApiSuccess extends ApiResponse {
 		this.payload = init?.payload ?? null;
 	}
 
+	toNoContentResponse() {
+		if (this.status !== HTTP_STATUS_CODE.NO_CONTENT) {
+			throw new Error(
+				'Called toNoContentResponse when the status is not 204',
+			);
+		}
+
+		return new Response(null, { status: this.status });
+	}
+
 	static signUp(data: { accessToken: string; refreshToken: string }) {
 		return new ApiSuccess('User signed up', {
 			status: HTTP_STATUS_CODE.CREATED,
@@ -48,6 +58,16 @@ export default class ApiSuccess extends ApiResponse {
 				access_token: data.accessToken,
 				refresh_token: data.refreshToken,
 			},
+		});
+	}
+
+	static getUsers(users: any[]) {
+		return new ApiSuccess('Users returned', { payload: { items: users } });
+	}
+
+	static deleteUser() {
+		return new ApiSuccess('User deleted', {
+			status: HTTP_STATUS_CODE.NO_CONTENT,
 		});
 	}
 }

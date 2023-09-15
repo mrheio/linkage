@@ -10,3 +10,6 @@ export const users = pgTable('users', {
 	updated_at: date('updated_at').defaultNow(),
 	deleted_at: date('deleted_at'),
 });
+
+export type User = typeof users.$inferSelect;
+export type SafeUser = Omit<User, 'password'>;
