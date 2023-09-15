@@ -1,6 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { useUpdateUser } from '~/hooks';
 import { usersService } from '~/services';
 import { jwtService } from '~/services/jwt.service';
@@ -24,15 +23,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	return { props: { user: JSON.parse(JSON.stringify(user)) } };
 };
 
-const Profile = ({
-	user,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Profile = (
+	props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) => {
+	const { user } = props;
 	const router = useRouter();
 	const {
 		mutate: updateUser,
 		isLoading: isUpdateUserRunning,
 		isSuccess: isUpdateUserSuccess,
-	} = useUpdateUser();
+	} = useUpdateUser(() => router.reload());
 
 	const handleDeleteAccount = async () => {
 		updateUser({
@@ -44,12 +44,6 @@ const Profile = ({
 	const handleCancelDeleteAccount = async () => {
 		updateUser({ uid: user.id, data: { deleted_at: null } });
 	};
-
-	useEffect(() => {
-		if (isUpdateUserSuccess) {
-			router.reload();
-		}
-	}, [isUpdateUserSuccess]);
 
 	return (
 		<div>
