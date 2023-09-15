@@ -1,3 +1,3 @@
-import { deleteUser } from '~/api';
+import { deleteUser, patchUser } from '~/api';
 
-export { deleteUser as DELETE };
+export { deleteUser as DELETE, patchUser as PATCH };

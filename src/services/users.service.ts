@@ -6,6 +6,7 @@ import {
 	removeSensitiveUserData,
 	removeSensitiveUserDataFromList,
 } from '~/utils/api';
+import { validationService } from './validation.service';
 
 const getUsers = async () => {
 	const result = await db.select().from(users);
@@ -21,6 +22,15 @@ const getUser = async (uid: string) => {
 
 	const user = result[0];
 	return removeSensitiveUserData(user);
+};
+
+const updateUser = async (uid: string, data: unknown) => {
+	const userId = validationService.validateUuid(uid);
+	const userData = validationService.validateUpdateUserData(data);
+
+	await db.update(users).set(userData).where(eq(users.id, userId));
+
+	return;
 };
 
 const deleteUser = async (uid: string) => {
@@ -42,5 +52,6 @@ const deleteUser = async (uid: string) => {
 export const usersService = {
 	getUsers,
 	getUser,
+	updateUser,
 	deleteUser,
 };

@@ -25,6 +25,22 @@ class FetchBuilder {
 		});
 	}
 
+	PATCH(body?: unknown) {
+		return new FetchBuilder(this.input, {
+			...this.init,
+			method: 'PATCH',
+			headers: {
+				...this.init?.headers,
+				'Content-Type': 'application/json',
+			},
+			body: body ? JSON.stringify(body) : undefined,
+		});
+	}
+
+	DELETE() {
+		return new FetchBuilder(this.input, { ...this.init, method: 'DELETE' });
+	}
+
 	async run() {
 		const response = await fetch(this.input, this.init);
 

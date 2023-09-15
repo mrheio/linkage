@@ -15,6 +15,17 @@ export const refreshSessionSchema = z.object({
 	refresh_token: z.string(),
 });
 
+export const updateUserSchema = z.object({
+	email: z.string().email().optional(),
+	username: z.string().trim().min(3).optional(),
+	password: z.string().trim().min(8).optional(),
+	role: z.enum(['user', 'admin']).optional(),
+	updated_at: z.string().datetime().optional(),
+	deleted_at: z.string().datetime().nullable().optional(),
+});
+
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
+
+export type UpdateUserData = z.infer<typeof updateUserSchema>;

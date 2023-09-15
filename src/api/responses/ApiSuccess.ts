@@ -65,6 +65,10 @@ export default class ApiSuccess extends ApiResponse {
 		return new ApiSuccess('Users returned', { payload: { items: users } });
 	}
 
+	static updateUser() {
+		return new ApiSuccess('User data updated');
+	}
+
 	static deleteUser() {
 		return new ApiSuccess('User deleted', {
 			status: HTTP_STATUS_CODE.NO_CONTENT,
