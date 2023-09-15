@@ -8,9 +8,6 @@ const useSignOut = () => {
 		mutationFn: async () => {
 			await myfetch('/api/auth/sign-out').POST().run();
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries(['session']);
-		},
 	});
 };
 

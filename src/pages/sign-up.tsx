@@ -30,7 +30,7 @@ const SignUp = () => {
 
 	useEffect(() => {
 		if (isSignUpSuccess) {
-			router.reload();
+			router.push(ROUTES.HOME);
 		}
 	}, [isSignUpSuccess]);
 
