@@ -58,6 +58,11 @@ const signIn = async (data: unknown) => {
 	}
 
 	const user = result[0];
+
+	if (!!user.deleted_at) {
+		throw ApiError.userNotFound();
+	}
+
 	const doPasswordsMatch = securityService.comparePasswords(
 		signInData.password,
 		user.password ?? '',

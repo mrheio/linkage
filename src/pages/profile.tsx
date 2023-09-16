@@ -1,6 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useRouter } from 'next/router';
-import { useUpdateUser } from '~/hooks';
+import { useSignOut, useUpdateUser } from '~/hooks';
 import { authService, usersService } from '~/services';
 import { CookieKey } from '~/utils';
 
@@ -21,9 +20,9 @@ const Profile = (
 	props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
 	const { user } = props;
-	const router = useRouter();
+	const { mutate: signOut } = useSignOut();
 	const { mutate: updateUser, isLoading: isUpdateUserRunning } =
-		useUpdateUser(() => router.replace(router.asPath));
+		useUpdateUser(() => signOut());
 
 	const handleDeleteAccount = async () => {
 		updateUser({
