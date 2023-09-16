@@ -38,6 +38,7 @@ const SignIn = () => {
 				<label htmlFor="password">Password</label>
 				<input
 					id="password"
+					type="password"
 					aria-invalid={errors.password ? 'true' : undefined}
 					{...register('password')}
 				/>

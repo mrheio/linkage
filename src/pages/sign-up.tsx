@@ -47,10 +47,11 @@ const SignUp = () => {
 				<label htmlFor="password">Password</label>
 				<input
 					id="password"
+					type="password"
 					aria-invalid={errors.password ? 'true' : undefined}
 					{...register('password')}
 				/>
-				<small>{errors.username?.message}</small>
+				<small>{errors.password?.message}</small>
 			</div>
 			<button type="submit" aria-busy={isSignUpRunning}>
 				Create account
