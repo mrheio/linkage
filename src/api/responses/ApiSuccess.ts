@@ -1,3 +1,4 @@
+import { Community } from '~/drizzle';
 import { Session } from '~/schemas';
 import { HTTP_STATUS_CODE } from '../status-codes';
 import ApiResponse from './ApiResponse';
@@ -73,6 +74,12 @@ export default class ApiSuccess extends ApiResponse {
 	static deleteUser() {
 		return new ApiSuccess('User deleted', {
 			status: HTTP_STATUS_CODE.NO_CONTENT,
+		});
+	}
+
+	static getUserCommunities(communities: Community[]) {
+		return new ApiSuccess('User communities returned', {
+			payload: { items: communities },
 		});
 	}
 }
