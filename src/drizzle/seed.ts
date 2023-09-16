@@ -1,12 +1,12 @@
 import { loadEnvConfig } from '@next/env';
 import { cwd } from 'node:process';
 import { db } from './db';
-import { communities } from './schema/communities';
-import { users } from './schema/users';
-import { usersToCommunities } from './schema/users-to-communities';
-import { generateFakeCommunities } from './seed/community.fake';
-import { generateFakeUsersToCommunities } from './seed/relations.fake';
-import { generateFakeUsers } from './seed/user.fake';
+import { communities, users, usersToCommunities } from './schema/index';
+import {
+	generateFakeCommunities,
+	generateFakeUsers,
+	generateFakeUsersToCommunities,
+} from './seed/index';
 
 const seed = async () => {
 	loadEnvConfig(cwd());
