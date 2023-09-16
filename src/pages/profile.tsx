@@ -1,10 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useUpdateUser } from '~/hooks';
-import { usersService } from '~/services';
-import { jwtService } from '~/services/jwt.service';
+import { authService, usersService } from '~/services';
 import { CookieKey } from '~/utils';
-import { Config } from '../../config';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	const accessToken = req.cookies[CookieKey.AccessToken];
@@ -13,12 +11,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 		return { props: {} };
 	}
 
-	const { payload } = await jwtService.verifyJwt(
-		accessToken,
-		Config.JWT_SECRET,
-	);
-
-	const user = await usersService.getUser(payload.id);
+	const session = await authService.getSession(accessToken);
+	const user = await usersService.getUser(session.id);
 
 	return { props: { user: JSON.parse(JSON.stringify(user)) } };
 };
@@ -28,11 +22,8 @@ const Profile = (
 ) => {
 	const { user } = props;
 	const router = useRouter();
-	const {
-		mutate: updateUser,
-		isLoading: isUpdateUserRunning,
-		isSuccess: isUpdateUserSuccess,
-	} = useUpdateUser(() => router.reload());
+	const { mutate: updateUser, isLoading: isUpdateUserRunning } =
+		useUpdateUser(() => router.replace(router.asPath));
 
 	const handleDeleteAccount = async () => {
 		updateUser({

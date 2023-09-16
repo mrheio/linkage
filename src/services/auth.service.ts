@@ -1,37 +1,37 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import {
-	Session,
-	refreshSessionSchema,
-	signInSchema,
-	signUpSchema,
-} from '~/schemas';
+import { Session } from '~/schemas';
 import { Config } from '../../config';
 import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
+import { validationService } from './validation.service';
+
+const accessTokenOptions = { expirationTime: '30s', secret: Config.JWT_SECRET };
+const refreshTokenOptions = {
+	expirationTime: '30d',
+	secret: Config.JWT_SECRET,
+};
+
+const generateTokens = async (user: any) => {
+	const accessToken = await jwtService.signJwt(
+		{ id: user.id, username: user.username },
+		accessTokenOptions,
+	);
+	const refreshToken = await jwtService.signJwt(
+		{ id: user.id },
+		refreshTokenOptions,
+	);
+	return { accessToken, refreshToken };
+};
 
 const signUp = async (data: unknown) => {
-	const parsed = signUpSchema.safeParse(data);
-
-	if (!parsed.success) {
-		throw ApiError.zod(parsed.error);
-	}
+	const signUpData = validationService.validateSignUpData(data);
 
 	try {
-		const secureData = securityService.hashUserPassword(parsed.data);
+		const secureData = securityService.getSecuredUserData(signUpData);
 		const user = (await db.insert(users).values(secureData).returning())[0];
-
-		const accessToken = await jwtService.signJwt(
-			{ id: user.id, username: user.username },
-			{ expirationTime: '30s', secret: Config.JWT_SECRET },
-		);
-		const refreshToken = await jwtService.signJwt(
-			{ id: user.id },
-			{ expirationTime: '30d', secret: Config.JWT_SECRET },
-		);
-
-		return { accessToken, refreshToken };
+		return generateTokens(user);
 	} catch (e) {
 		if ((e as any)?.constraint === 'users_email_unique') {
 			throw ApiError.emailTaken();
@@ -46,16 +46,12 @@ const signUp = async (data: unknown) => {
 };
 
 const signIn = async (data: unknown) => {
-	const parsed = signInSchema.safeParse(data);
-
-	if (!parsed.success) {
-		throw ApiError.zod(parsed.error);
-	}
+	const signInData = validationService.validateSignInData(data);
 
 	const result = await db
 		.select()
 		.from(users)
-		.where(eq(users.username, parsed.data.username));
+		.where(eq(users.username, signInData.username));
 
 	if (!result.length) {
 		throw ApiError.userNotFound();
@@ -63,7 +59,7 @@ const signIn = async (data: unknown) => {
 
 	const user = result[0];
 	const doPasswordsMatch = securityService.comparePasswords(
-		parsed.data.password,
+		signInData.password,
 		user.password ?? '',
 	);
 
@@ -71,27 +67,13 @@ const signIn = async (data: unknown) => {
 		throw ApiError.userNotFound();
 	}
 
-	const accessToken = await jwtService.signJwt(
-		{ id: user.id, username: user.username },
-		{ expirationTime: '30s', secret: Config.JWT_SECRET },
-	);
-	const refreshToken = await jwtService.signJwt(
-		{ id: user.id },
-		{ expirationTime: '30d', secret: Config.JWT_SECRET },
-	);
-
-	return { accessToken, refreshToken };
+	return generateTokens(user);
 };
 
 const refreshSession = async (data: unknown) => {
-	const parsed = refreshSessionSchema.safeParse(data);
+	const refreshData = validationService.validateRefreshData(data);
 
-	if (!parsed.success) {
-		throw ApiError.zod(parsed.error);
-	}
-
-	const payload = jwtService.decodeJwt(parsed.data.refresh_token) as Session;
-
+	const payload = jwtService.decodeJwt(refreshData.refresh_token) as Session;
 	const result = await db
 		.select({ id: users.id, username: users.username })
 		.from(users)
@@ -102,21 +84,18 @@ const refreshSession = async (data: unknown) => {
 	}
 
 	const user = result[0];
+	return generateTokens(user);
+};
 
-	const newAccessToken = await jwtService.signJwt(
-		{ id: user.id, username: user.username },
-		{ expirationTime: '30s', secret: Config.JWT_SECRET },
-	);
-	const newRefreshToken = await jwtService.signJwt(
-		{ id: user.id },
-		{ expirationTime: '30d', secret: Config.JWT_SECRET },
-	);
-
-	return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+const getSession = async (accessToken: string) => {
+	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
+	const sessionData = validationService.validateSessionData(jwt.payload);
+	return sessionData;
 };
 
 export const authService = {
 	signUp,
 	signIn,
 	refreshSession,
+	getSession,
 };

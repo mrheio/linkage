@@ -24,8 +24,11 @@ export const updateUserSchema = z.object({
 	deleted_at: z.string().datetime().nullable().optional(),
 });
 
+export const deleteUserSchema = z.string().uuid();
+
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
 
 export type UpdateUserData = z.infer<typeof updateUserSchema>;
+export type DeleteUserData = z.infer<typeof deleteUserSchema>;

@@ -12,12 +12,12 @@ const comparePasswords = (password: string, hashedPassword: string) => {
 	return compareSync(password, hashedPassword);
 };
 
-const hashUserPassword = (data: SignUpData) => {
+const getSecuredUserData = (data: SignUpData) => {
 	return { ...data, password: hashPassword(data.password) };
 };
 
 export const securityService = {
 	hashPassword,
 	comparePasswords,
-	hashUserPassword,
+	getSecuredUserData,
 };

@@ -1,11 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import { deleteUserSchema } from '~/schemas';
 import {
 	removeSensitiveUserData,
 	removeSensitiveUserDataFromList,
-} from '~/utils/api';
+} from '~/utils';
 import { validationService } from './validation.service';
 
 const getUsers = async () => {
@@ -34,13 +33,9 @@ const updateUser = async (uid: string, data: unknown) => {
 };
 
 const deleteUser = async (uid: string) => {
-	const parsed = deleteUserSchema.safeParse(uid);
+	const userId = validationService.validateUuid(uid);
 
-	if (!parsed.success) {
-		throw ApiError.userNotFound();
-	}
-
-	const result = await db.delete(users).where(eq(users.id, parsed.data));
+	const result = await db.delete(users).where(eq(users.id, userId));
 
 	if (!result.rowCount) {
 		throw ApiError.userNotFound();

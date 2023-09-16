@@ -1,3 +1,4 @@
+import { Session } from '~/schemas';
 import { HTTP_STATUS_CODE } from '../status-codes';
 import ApiResponse from './ApiResponse';
 
@@ -45,7 +46,7 @@ export default class ApiSuccess extends ApiResponse {
 		return new ApiSuccess('User signed out');
 	}
 
-	static getSession(session?: unknown | null) {
+	static getSession(session?: Session) {
 		if (!session) {
 			return new ApiSuccess('No user session found');
 		}

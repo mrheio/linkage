@@ -26,19 +26,25 @@ const Navbar = () => {
 				</li>
 			</ul>
 			<ul>
-				<li>
-					<Link href={ROUTES.SIGN_IN}>Sign in</Link>
-				</li>
-				<li>
-					<Link href={ROUTES.SIGN_UP}>Sign up</Link>
-				</li>
-				<li>
-					<Link href={ROUTES.PROFILE}>Profile</Link>
-				</li>
+				{!session && (
+					<>
+						<li>
+							<Link href={ROUTES.SIGN_IN}>Sign in</Link>
+						</li>
+						<li>
+							<Link href={ROUTES.SIGN_UP}>Sign up</Link>
+						</li>
+					</>
+				)}
 				{session && (
-					<li>
-						<button onClick={handleSignOut}>Sign out</button>
-					</li>
+					<>
+						<li>
+							<Link href={ROUTES.PROFILE}>Profile</Link>
+						</li>
+						<li>
+							<button onClick={handleSignOut}>Sign out</button>
+						</li>
+					</>
 				)}
 			</ul>
 		</nav>

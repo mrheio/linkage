@@ -1,8 +1,6 @@
 import { NextRequest } from 'next/server';
 import { authService } from '~/services';
-import { jwtService } from '~/services/jwt.service';
-import { CookieKey } from '~/utils';
-import { Config } from '../../config';
+import { CookieKey, secureCookieOptions } from '~/utils';
 import { ApiError, ApiSuccess } from './responses';
 
 export const signUp = async (request: Request) => {
@@ -12,8 +10,16 @@ export const signUp = async (request: Request) => {
 		const tokens = await authService.signUp(data);
 		const response = ApiSuccess.signUp(tokens).toNextResponse();
 
-		response.cookies.set(CookieKey.AccessToken, tokens.accessToken);
-		response.cookies.set(CookieKey.RefreshToken, tokens.refreshToken);
+		response.cookies.set(
+			CookieKey.AccessToken,
+			tokens.accessToken,
+			secureCookieOptions,
+		);
+		response.cookies.set(
+			CookieKey.RefreshToken,
+			tokens.refreshToken,
+			secureCookieOptions,
+		);
 
 		return response;
 	} catch (e) {
@@ -28,8 +34,16 @@ export const signIn = async (request: Request) => {
 		const tokens = await authService.signIn(data);
 		const response = ApiSuccess.signIn(tokens).toNextResponse();
 
-		response.cookies.set(CookieKey.AccessToken, tokens.accessToken);
-		response.cookies.set(CookieKey.RefreshToken, tokens.refreshToken);
+		response.cookies.set(
+			CookieKey.AccessToken,
+			tokens.accessToken,
+			secureCookieOptions,
+		);
+		response.cookies.set(
+			CookieKey.RefreshToken,
+			tokens.refreshToken,
+			secureCookieOptions,
+		);
 
 		return response;
 	} catch (e) {
@@ -40,8 +54,8 @@ export const signIn = async (request: Request) => {
 export const signOut = async (request: Request) => {
 	const response = ApiSuccess.signOut().toNextResponse();
 
-	response.cookies.set(CookieKey.AccessToken, '');
-	response.cookies.set(CookieKey.RefreshToken, '');
+	response.cookies.set(CookieKey.AccessToken, '', secureCookieOptions);
+	response.cookies.set(CookieKey.RefreshToken, '', secureCookieOptions);
 	response.cookies.delete(CookieKey.AccessToken);
 	response.cookies.delete(CookieKey.RefreshToken);
 
@@ -62,8 +76,16 @@ export const refreshSession = async (request: NextRequest) => {
 		);
 		const response = ApiSuccess.refreshSession(tokens).toNextResponse();
 
-		response.cookies.set(CookieKey.AccessToken, tokens.accessToken);
-		response.cookies.set(CookieKey.RefreshToken, tokens.refreshToken);
+		response.cookies.set(
+			CookieKey.AccessToken,
+			tokens.accessToken,
+			secureCookieOptions,
+		);
+		response.cookies.set(
+			CookieKey.RefreshToken,
+			tokens.refreshToken,
+			secureCookieOptions,
+		);
 
 		return response;
 	} catch (e) {
@@ -79,8 +101,8 @@ export const getSession = async (request: NextRequest) => {
 	}
 
 	try {
-		const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
-		return ApiSuccess.getSession(jwt.payload).toNextResponse();
+		const session = await authService.getSession(accessToken);
+		return ApiSuccess.getSession(session).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
