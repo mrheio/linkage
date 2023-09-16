@@ -1,74 +1,44 @@
-import { faker } from '@faker-js/faker';
 import { loadEnvConfig } from '@next/env';
 import { cwd } from 'node:process';
-import { v4 as uuidv4 } from 'uuid';
 import { db } from './db';
+import { communities } from './schema/communities';
 import { users } from './schema/users';
-
-const fakeModelDates = ({
-	from = '2023-01-01T00:00:00.000Z',
-	to = '2023-12-31T00:00:00.000Z',
-} = {}): [string, string, null] => {
-	const created_at = faker.date
-		.between({
-			from,
-			to,
-		})
-		.toISOString();
-
-	const updated_at = faker.date
-		.between({
-			from: created_at,
-			to,
-		})
-		.toISOString();
-
-	const deleted_at = null;
-
-	return [created_at, updated_at, deleted_at];
-};
-
-const fakeUser = () => {
-	const id = uuidv4();
-	const email = faker.internet.email();
-	const username = faker.internet.userName();
-	const password = faker.internet.password();
-	const role = faker.helpers.arrayElement(['user', 'admin']) as
-		| 'user'
-		| 'admin';
-	const [created_at, updated_at, deleted_at] = fakeModelDates();
-
-	return {
-		id,
-		email,
-		username,
-		password,
-		role,
-		created_at,
-		updated_at,
-		deleted_at,
-	};
-};
-
-const generateFakeUsers = (count = 12) => {
-	const users = [...Array(count)].map((x) => fakeUser());
-	return users;
-};
+import { usersToCommunities } from './schema/users-to-communities';
+import { generateFakeCommunities } from './seed/community.fake';
+import { generateFakeUsersToCommunities } from './seed/relations.fake';
+import { generateFakeUsers } from './seed/user.fake';
 
 const seed = async () => {
 	loadEnvConfig(cwd());
 
 	console.log('Deleting old data...');
+	await db.delete(usersToCommunities);
+	await db.delete(communities);
 	await db.delete(users);
 	console.log('✓ Old data deleted');
 
 	console.log('Generating new data...');
 	const fakeUsers = generateFakeUsers();
+	const fakeCommunities = generateFakeCommunities(fakeUsers);
+	const fakeUsersToCommunities = generateFakeUsersToCommunities(
+		fakeUsers,
+		fakeCommunities,
+	);
 	console.log('✓ New data generated');
 
-	console.log('Inserting users...');
+	console.log('Inserting new data...');
+
+	console.log('-- Inserting users...');
 	await db.insert(users).values(fakeUsers);
-	console.log('✓ Users inserted');
+	console.log('-- ✓ Users inserted');
+
+	console.log('-- Inserting communities...');
+	await db.insert(communities).values(fakeCommunities);
+	console.log('-- ✓ Communities inserted');
+
+	console.log('-- Inserting users to communities relations...');
+	await db.insert(usersToCommunities).values(fakeUsersToCommunities);
+	console.log('-- ✓ Users to communities relations inserted');
 
 	console.log('✓ New data inserted');
 

@@ -15,6 +15,13 @@
       "when": 1694592969181,
       "tag": "0001_goofy_lady_deathstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1694874757633,
+      "tag": "0002_sparkling_skullbuster",
+      "breakpoints": true
     }
   ]
 }
