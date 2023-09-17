@@ -64,7 +64,7 @@ const getUserCommunities = async (uid: string) => {
 	const userId = validationService.validateUuid(uid);
 
 	const result = await db
-		.select()
+		.select({ community: communities })
 		.from(usersToCommunities)
 		.where(eq(usersToCommunities.user_id, userId))
 		.innerJoin(
@@ -72,7 +72,7 @@ const getUserCommunities = async (uid: string) => {
 			eq(usersToCommunities.community_id, communities.id),
 		);
 
-	return result.map((x) => x.communities);
+	return result.map((x) => x.community);
 };
 
 const updateCommunity = async (cid: number, data: unknown) => {
