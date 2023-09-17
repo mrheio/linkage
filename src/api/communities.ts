@@ -44,3 +44,17 @@ export const patchCommunity = async (
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
+
+export const deleteUserFromCommunity = async (
+	request: NextRequest,
+	context: { params: { uid: string; cid: number } },
+) => {
+	const { uid, cid } = context.params;
+
+	try {
+		await communitiesService.deleteUserFromCommunity(uid, cid);
+		return ApiSuccess.deleteUserFromCommunity().toNoContentResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};

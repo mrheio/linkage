@@ -92,4 +92,10 @@ export default class ApiSuccess extends ApiResponse {
 	static updateCommunity() {
 		return new ApiSuccess('Community updated');
 	}
+
+	static deleteUserFromCommunity() {
+		return new ApiSuccess('User delete from community', {
+			status: HTTP_STATUS_CODE.NO_CONTENT,
+		});
+	}
 }

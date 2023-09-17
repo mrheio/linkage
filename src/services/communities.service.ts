@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { communities, db, users, usersToCommunities } from '~/drizzle';
 import { UpdateCommunityData } from '~/schemas';
@@ -94,8 +94,23 @@ const updateCommunity = async (cid: number, data: unknown) => {
 	}
 };
 
+const deleteUserFromCommunity = async (uid: string, cid: number) => {
+	const userId = validationService.validateUuid(uid);
+	const communityId = validationService.validatePositiveNumber(cid);
+
+	await db
+		.delete(usersToCommunities)
+		.where(
+			and(
+				eq(usersToCommunities.user_id, userId),
+				eq(usersToCommunities.community_id, communityId),
+			),
+		);
+};
+
 export const communitiesService = {
 	getCommunities,
 	getUserCommunities,
 	updateCommunity,
+	deleteUserFromCommunity,
 };
