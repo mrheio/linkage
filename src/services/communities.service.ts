@@ -94,6 +94,24 @@ const updateCommunity = async (cid: number, data: unknown) => {
 	}
 };
 
+const addUserToCommunity = async (uid: string, cid: number) => {
+	const userId = validationService.validateUuid(uid);
+	const communityId = validationService.validatePositiveNumber(cid);
+
+	try {
+		await db
+			.insert(usersToCommunities)
+			.values({ user_id: userId, community_id: communityId });
+	} catch (e) {
+		// TODO: refactor the way sql errors are handled
+		if ((e as any).code === '23505') {
+			throw ApiError.userAlreadyInCommunity();
+		}
+
+		throw e;
+	}
+};
+
 const deleteUserFromCommunity = async (uid: string, cid: number) => {
 	const userId = validationService.validateUuid(uid);
 	const communityId = validationService.validatePositiveNumber(cid);
@@ -112,5 +130,6 @@ export const communitiesService = {
 	getCommunities,
 	getUserCommunities,
 	updateCommunity,
+	addUserToCommunity,
 	deleteUserFromCommunity,
 };

@@ -33,6 +33,7 @@ const signUp = async (data: unknown) => {
 		const user = (await db.insert(users).values(secureData).returning())[0];
 		return generateTokens(user);
 	} catch (e) {
+		// TODO: refactor the way sql errors are handled
 		if ((e as any)?.constraint === 'users_email_unique') {
 			throw ApiError.emailTaken();
 		}

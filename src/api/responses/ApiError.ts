@@ -55,4 +55,8 @@ export default class ApiError extends ApiResponse {
 			status: HTTP_STATUS_CODE.NOT_FOUND,
 		});
 	}
+
+	static userAlreadyInCommunity() {
+		return new ApiError('User is already part of this community');
+	}
 }
