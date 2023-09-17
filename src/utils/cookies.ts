@@ -8,4 +8,5 @@ export const CookieKey = {
 export const secureCookieOptions: Partial<ResponseCookie> = {
 	httpOnly: true,
 	secure: true,
+	expires: new Date().setDate(new Date().getDate() + 30),
 };
