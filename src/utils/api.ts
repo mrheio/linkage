@@ -8,3 +8,6 @@ export const removeSensitiveUserData = (user: User) => {
 export const removeSensitiveUserDataFromList = (users: User[]) => {
 	return users.map((user) => removeSensitiveUserData(user));
 };
+
+export const getCommunitySlug = (communityName: string) =>
+	communityName.replaceAll(' ', '-').toLowerCase();

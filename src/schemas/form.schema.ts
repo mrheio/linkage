@@ -26,9 +26,17 @@ export const updateUserSchema = z.object({
 
 export const deleteUserSchema = z.string().uuid();
 
+export const updateCommunitySchema = z.object({
+	name: z.string().trim().min(3).optional(),
+	description: z.string().optional(),
+	owner_id: z.string().uuid().optional(),
+});
+
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
 
 export type UpdateUserData = z.infer<typeof updateUserSchema>;
 export type DeleteUserData = z.infer<typeof deleteUserSchema>;
+
+export type UpdateCommunityData = z.infer<typeof updateCommunitySchema>;

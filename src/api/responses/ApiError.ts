@@ -49,4 +49,10 @@ export default class ApiError extends ApiResponse {
 			status: HTTP_STATUS_CODE.UNAUTHORIZED,
 		});
 	}
+
+	static communityNotFound() {
+		return new ApiError('No community was found', {
+			status: HTTP_STATUS_CODE.NOT_FOUND,
+		});
+	}
 }

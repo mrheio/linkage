@@ -82,4 +82,8 @@ export default class ApiSuccess extends ApiResponse {
 			payload: { items: communities },
 		});
 	}
+
+	static updateCommunity() {
+		return new ApiSuccess('Community updated');
+	}
 }

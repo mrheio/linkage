@@ -15,3 +15,18 @@ export const getUserCommunities = async (
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
+
+export const patchCommunity = async (
+	request: NextRequest,
+	context: { params: { cid: number } },
+) => {
+	const { cid } = context.params;
+	const data = await request.json();
+
+	try {
+		await communitiesService.updateCommunity(cid, data);
+		return ApiSuccess.updateCommunity().toNextResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};
