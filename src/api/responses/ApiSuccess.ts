@@ -89,6 +89,12 @@ export default class ApiSuccess extends ApiResponse {
 		});
 	}
 
+	static addCommunity() {
+		return new ApiSuccess('Community added', {
+			status: HTTP_STATUS_CODE.CREATED,
+		});
+	}
+
 	static updateCommunity() {
 		return new ApiSuccess('Community updated');
 	}

@@ -84,6 +84,31 @@ const getUserCommunities = async (
 	return result;
 };
 
+const addCommunity = async (data: unknown) => {
+	let communityData = validationService.validateAddCommunityData(data);
+
+	const foundUser = await db
+		.select()
+		.from(users)
+		.where(eq(users.id, communityData.owner_id));
+
+	if (!foundUser.length) {
+		throw ApiError.userNotFound();
+	}
+
+	const res = await db
+		.insert(communities)
+		.values({
+			...communityData,
+			slug: getCommunitySlug(communityData.name),
+		})
+		.returning();
+
+	await db
+		.insert(usersToCommunities)
+		.values({ user_id: communityData.owner_id, community_id: res[0].id });
+};
+
 const updateCommunity = async (cid: number, data: unknown) => {
 	const communityId = validationService.validatePositiveNumber(cid);
 	const communityData = validationService.validateUpdateCommunityData(data);
@@ -138,6 +163,7 @@ const deleteUserFromCommunity = async (uid: string, cid: number) => {
 export const communitiesService = {
 	getCommunities,
 	getUserCommunities,
+	addCommunity,
 	updateCommunity,
 	addUserToCommunity,
 	deleteUserFromCommunity,

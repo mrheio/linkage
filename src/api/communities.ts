@@ -34,6 +34,17 @@ export const getUserCommunities = async (
 	}
 };
 
+export const postCommunity = async (request: NextRequest) => {
+	const data = await request.json();
+
+	try {
+		await communitiesService.addCommunity(data);
+		return ApiSuccess.addCommunity().toNextResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};
+
 export const patchCommunity = async (
 	request: NextRequest,
 	context: { params: { cid: number } },

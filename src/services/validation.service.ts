@@ -1,6 +1,7 @@
 import { ZodSchema } from 'zod';
 import { ApiError } from '~/api/responses';
 import {
+	addCommunitySchema,
 	positiveNumberSchema,
 	refreshSessionSchema,
 	sessionSchema,
@@ -46,6 +47,9 @@ const validateSessionData = (data: unknown) =>
 const validateUpdateUserData = (data: unknown) =>
 	validateData(data, updateUserSchema);
 
+const validateAddCommunityData = (data: unknown) =>
+	validateData(data, addCommunitySchema);
+
 const validateUpdateCommunityData = (data: unknown) =>
 	validateData(data, updateCommunitySchema);
 
@@ -57,5 +61,6 @@ export const validationService = {
 	validateRefreshData,
 	validateSessionData,
 	validateUpdateUserData,
+	validateAddCommunityData,
 	validateUpdateCommunityData,
 };

@@ -1,3 +1,3 @@
-import { getCommunities } from '~/api';
+import { getCommunities, postCommunity } from '~/api';
 
-export { getCommunities as GET };
+export { getCommunities as GET, postCommunity as POST };
