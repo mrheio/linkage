@@ -1,4 +1,9 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import {
+	useAddUserToCommunity,
+	useRemoveUserFromCommunity,
+	useUserCommunities,
+} from '~/hooks';
 import { authService, communitiesService } from '~/services';
 import { CookieKey } from '~/utils';
 
@@ -67,15 +72,34 @@ export default function Home(
 	}
 
 	const { userCommunities, userNotInCommunities } = props;
+	const { data: communities } = useUserCommunities(session.id, {
+		initialData: userCommunities,
+	});
+	const { data: notInCommunities } = useUserCommunities(session.id, {
+		initialData: userNotInCommunities,
+		reverse: true,
+	});
+	const { mutate: addUserToCommunity } = useAddUserToCommunity();
+	const { mutate: removeUserFromCommunity } = useRemoveUserFromCommunity();
+
+	const handleAddUserToCommunity = (cid) => {
+		addUserToCommunity({ uid: session.id, cid });
+	};
+
+	const handleRemoveUserFromCommunity = (cid) => {
+		removeUserFromCommunity({ uid: session.id, cid });
+	};
 
 	return (
 		<main>
 			<section>
 				<h1>Your communities</h1>
-				{userCommunities?.map((c) => (
+				{communities?.map((c) => (
 					<article key={c.id}>
 						<header>
-							<h4>{c.name}</h4>
+							<h4>
+								{c.id} - {c.name}
+							</h4>
 						</header>
 						{c.description}
 						<footer>
@@ -83,6 +107,15 @@ export default function Home(
 								Created at:{' '}
 								{new Date(c.created_at).toLocaleDateString()}
 							</small>
+							<button
+								type="button"
+								className="secondary outline"
+								onClick={() =>
+									handleRemoveUserFromCommunity(c.id)
+								}
+							>
+								Leave community
+							</button>
 						</footer>
 					</article>
 				))}
@@ -90,10 +123,12 @@ export default function Home(
 
 			<section>
 				<h1>Not part of these ones yet</h1>
-				{userNotInCommunities?.map((c) => (
+				{notInCommunities?.map((c) => (
 					<article key={c.id}>
 						<header>
-							<h4>{c.name}</h4>
+							<h4>
+								{c.id} - {c.name}
+							</h4>
 						</header>
 						{c.description}
 						<footer>
@@ -101,6 +136,12 @@ export default function Home(
 								Created at:{' '}
 								{new Date(c.created_at).toLocaleDateString()}
 							</small>
+							<button
+								type="button"
+								onClick={() => handleAddUserToCommunity(c.id)}
+							>
+								Join community
+							</button>
 						</footer>
 					</article>
 				))}
