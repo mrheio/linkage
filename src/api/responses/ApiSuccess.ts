@@ -84,7 +84,7 @@ export default class ApiSuccess extends ApiResponse {
 	}
 
 	static getUserCommunities(communities: Community[]) {
-		return new ApiSuccess('User communities returned', {
+		return new ApiSuccess('Communities returned', {
 			payload: { items: communities },
 		});
 	}

@@ -21,9 +21,13 @@ export const getUserCommunities = async (
 	context: { params: { uid: string } },
 ) => {
 	const { uid } = context.params;
+	const { searchParams } = new URL(request.url);
+	const reverse = searchParams.get('reverse') === 'true';
 
 	try {
-		const communities = await communitiesService.getUserCommunities(uid);
+		const communities = await communitiesService.getUserCommunities(uid, {
+			reverse,
+		});
 		return ApiSuccess.getUserCommunities(communities).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();

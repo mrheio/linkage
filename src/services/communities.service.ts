@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray, notInArray } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { communities, db, users, usersToCommunities } from '~/drizzle';
 import { UpdateCommunityData } from '~/schemas';
@@ -60,19 +60,28 @@ const getCommunities = async (
 	return result;
 };
 
-const getUserCommunities = async (uid: string) => {
+const getUserCommunities = async (
+	uid: string,
+	{ reverse } = { reverse: false },
+) => {
 	const userId = validationService.validateUuid(uid);
 
-	const result = await db
-		.select({ community: communities })
+	const innerQuery = db
+		.select({
+			data: usersToCommunities.community_id,
+		})
 		.from(usersToCommunities)
-		.where(eq(usersToCommunities.user_id, userId))
-		.innerJoin(
-			communities,
-			eq(usersToCommunities.community_id, communities.id),
+		.where(eq(usersToCommunities.user_id, userId));
+	const result = await db
+		.select()
+		.from(communities)
+		.where(
+			reverse
+				? notInArray(communities.id, innerQuery)
+				: inArray(communities.id, innerQuery),
 		);
 
-	return result.map((x) => x.community);
+	return result;
 };
 
 const updateCommunity = async (cid: number, data: unknown) => {
