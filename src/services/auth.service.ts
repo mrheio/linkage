@@ -7,7 +7,7 @@ import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
 import { validationService } from './validation.service';
 
-const accessTokenOptions = { expirationTime: '30s', secret: Config.JWT_SECRET };
+const accessTokenOptions = { expirationTime: '3m', secret: Config.JWT_SECRET };
 const refreshTokenOptions = {
 	expirationTime: '30d',
 	secret: Config.JWT_SECRET,
