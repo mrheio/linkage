@@ -26,6 +26,12 @@ export default class ApiError extends ApiResponse {
 		});
 	}
 
+	static unauthorized() {
+		return new ApiError('Request is unauthorized', {
+			status: HTTP_STATUS_CODE.UNAUTHORIZED,
+		});
+	}
+
 	static emailTaken() {
 		return new ApiError('This email is taken');
 	}
