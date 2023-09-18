@@ -6,7 +6,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	const accessToken = req.cookies[CookieKey.AccessToken];
 
 	if (!accessToken) {
-		return { props: {} };
+		const communities = await communitiesService.getCommunities();
+
+		return {
+			props: { communities: JSON.parse(JSON.stringify(communities)) },
+		};
 	}
 
 	const session = await authService.getSession(accessToken);
@@ -20,8 +24,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 	return {
 		props: {
-			communities: JSON.parse(JSON.stringify(userCommunities)),
-			notInCommunities: JSON.parse(JSON.stringify(userNotInCommunities)),
+			session: session,
+			userCommunities: JSON.parse(JSON.stringify(userCommunities)),
+			userNotInCommunities: JSON.parse(
+				JSON.stringify(userNotInCommunities),
+			),
 		},
 	};
 };
@@ -29,13 +36,43 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 export default function Home(
 	props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-	const { communities, notInCommunities } = props;
+	const { session } = props;
+
+	if (!session) {
+		const { communities } = props;
+
+		return (
+			<main>
+				<section>
+					<h1>Become part of great communities. Join Linkage now!</h1>
+					{communities?.map((c) => (
+						<article key={c.id}>
+							<header>
+								<h4>{c.name}</h4>
+							</header>
+							{c.description}
+							<footer>
+								<small>
+									Created at:{' '}
+									{new Date(
+										c.created_at,
+									).toLocaleDateString()}
+								</small>
+							</footer>
+						</article>
+					))}
+				</section>
+			</main>
+		);
+	}
+
+	const { userCommunities, userNotInCommunities } = props;
 
 	return (
 		<main>
 			<section>
 				<h1>Your communities</h1>
-				{communities?.map((c) => (
+				{userCommunities?.map((c) => (
 					<article key={c.id}>
 						<header>
 							<h4>{c.name}</h4>
@@ -53,7 +90,7 @@ export default function Home(
 
 			<section>
 				<h1>Not part of these ones yet</h1>
-				{notInCommunities?.map((c) => (
+				{userNotInCommunities?.map((c) => (
 					<article key={c.id}>
 						<header>
 							<h4>{c.name}</h4>
