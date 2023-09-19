@@ -129,6 +129,13 @@ export const middleware = async (request: NextRequest) => {
 
 	nextResponse.headers.set('x-middleware-cache', 'no-cache');
 
+	if (request.cookies.get(CookieKey.AccessToken)?.value) {
+		nextResponse.headers.set(
+			'Authorization',
+			`Bearer ${request.cookies.get(CookieKey.AccessToken)?.value}`,
+		);
+	}
+
 	return nextResponse;
 };
 

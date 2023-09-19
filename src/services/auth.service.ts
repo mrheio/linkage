@@ -15,7 +15,7 @@ const refreshTokenOptions = {
 
 const generateTokens = async (user: any) => {
 	const accessToken = await jwtService.signJwt(
-		{ id: user.id, username: user.username },
+		{ id: user.id, username: user.username, role: user.role },
 		accessTokenOptions,
 	);
 	const refreshToken = await jwtService.signJwt(

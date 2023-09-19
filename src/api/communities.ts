@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { communitiesService } from '~/services';
 import { ApiError, ApiSuccess } from './responses';
+import { withAdminOrOwner } from './utils';
 
 export const getCommunities = async (request: NextRequest) => {
 	const { searchParams } = new URL(request.url);
@@ -60,30 +61,34 @@ export const patchCommunity = async (
 	}
 };
 
-export const addUserToCommunity = async (
-	request: NextRequest,
-	context: { params: { uid: string; cid: number } },
-) => {
-	const { uid, cid } = context.params;
+export const addUserToCommunity = withAdminOrOwner(
+	async (
+		request: NextRequest,
+		context: { params: { uid: string; cid: number } },
+	) => {
+		const { uid, cid } = context.params;
 
-	try {
-		await communitiesService.addUserToCommunity(uid, cid);
-		return ApiSuccess.addUserToCommunity().toNextResponse();
-	} catch (e) {
-		return ApiError.returnOrThrow(e).toNextResponse();
-	}
-};
+		try {
+			await communitiesService.addUserToCommunity(uid, cid);
+			return ApiSuccess.addUserToCommunity().toNextResponse();
+		} catch (e) {
+			return ApiError.returnOrThrow(e).toNextResponse();
+		}
+	},
+);
 
-export const deleteUserFromCommunity = async (
-	request: NextRequest,
-	context: { params: { uid: string; cid: number } },
-) => {
-	const { uid, cid } = context.params;
+export const deleteUserFromCommunity = withAdminOrOwner(
+	async (
+		request: NextRequest,
+		context: { params: { uid: string; cid: number } },
+	) => {
+		const { uid, cid } = context.params;
 
-	try {
-		await communitiesService.deleteUserFromCommunity(uid, cid);
-		return ApiSuccess.deleteUserFromCommunity().toNoContentResponse();
-	} catch (e) {
-		return ApiError.returnOrThrow(e).toNextResponse();
-	}
-};
+		try {
+			await communitiesService.deleteUserFromCommunity(uid, cid);
+			return ApiSuccess.deleteUserFromCommunity().toNoContentResponse();
+		} catch (e) {
+			return ApiError.returnOrThrow(e).toNextResponse();
+		}
+	},
+);

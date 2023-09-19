@@ -7,6 +7,7 @@ export const sessionSchema = z.object({
 	iat: z.number().optional(),
 	id: z.string(),
 	username: z.string(),
+	role: z.enum(['user', 'admin']),
 });
 
 export type Session = z.infer<typeof sessionSchema>;
