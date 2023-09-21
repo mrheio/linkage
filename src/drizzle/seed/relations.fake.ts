@@ -1,7 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Community } from '../schema/communities';
-import { User } from '../schema/users';
-import { UserToCommunity } from '../schema/users-to-communities';
+import { Community, User, UserToCommunity } from '../schema';
 
 export const generateFakeUsersToCommunities = (
 	users: User[],

@@ -7,6 +7,7 @@ import {
 	uuid,
 	varchar,
 } from 'drizzle-orm/pg-core';
+import { posts } from './posts';
 import { users } from './users';
 import { usersToCommunities } from './users-to-communities';
 
@@ -25,6 +26,7 @@ export const communities = pgTable('communities', {
 
 export const communitiesRelations = relations(communities, ({ many }) => ({
 	members: many(usersToCommunities),
+	posts: many(posts),
 }));
 
 export type Community = typeof communities.$inferSelect;

@@ -22,6 +22,20 @@
       "when": 1694874757633,
       "tag": "0002_sparkling_skullbuster",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1695314929102,
+      "tag": "0003_sour_shotgun",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1695327210012,
+      "tag": "0004_luxuriant_ikaris",
+      "breakpoints": true
     }
   ]
 }
