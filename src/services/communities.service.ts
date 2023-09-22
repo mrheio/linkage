@@ -101,6 +101,7 @@ const addCommunity = async (data: unknown) => {
 		.values({
 			...communityData,
 			slug: getCommunitySlug(communityData.name),
+			created_by_id: communityData.owner_id,
 		})
 		.returning();
 
