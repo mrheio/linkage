@@ -8,6 +8,7 @@ const fakeCommunity = (members: User[], id: number) => {
 	const slug = name.replaceAll(' ', '-').toLowerCase();
 	const [created_at, updated_at, deleted_at] = fakeModelDates();
 	const owner_id = members[getRandomInt({ max: members.length - 1 })].id;
+	const created_by_id = owner_id;
 
 	return {
 		id,
@@ -18,6 +19,7 @@ const fakeCommunity = (members: User[], id: number) => {
 		updated_at,
 		deleted_at,
 		owner_id,
+		created_by_id,
 	};
 };
 

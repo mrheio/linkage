@@ -43,6 +43,13 @@
       "when": 1695331574905,
       "tag": "0005_abandoned_mattie_franklin",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1695365061750,
+      "tag": "0006_vengeful_aaron_stack",
+      "breakpoints": true
     }
   ]
 }
