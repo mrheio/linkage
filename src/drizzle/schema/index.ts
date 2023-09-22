@@ -1,3 +1,4 @@
+export * from './comments';
 export * from './communities';
 export * from './posts';
 export * from './users';

@@ -27,7 +27,7 @@ export const posts = pgTable('posts', {
 	community_id: integer('community_id'),
 });
 
-export const postsRelations = relations(posts, ({ one }) => ({
+export const postsRelations = relations(posts, ({ one, many }) => ({
 	user: one(users, {
 		fields: [posts.created_by_id],
 		references: [users.id],
