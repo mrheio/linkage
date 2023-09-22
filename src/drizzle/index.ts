@@ -1,3 +1,16 @@
 export * from './db';
-export { communities, users, usersToCommunities } from './schema';
-export type { Community, SafeUser, User, UserToCommunity } from './schema';
+export {
+	comments,
+	communities,
+	posts,
+	users,
+	usersToCommunities,
+} from './schema';
+export type {
+	Comment,
+	Community,
+	Post,
+	SafeUser,
+	User,
+	UserToCommunity,
+} from './schema';
