@@ -11,3 +11,6 @@ export const removeSensitiveUserDataFromList = (users: User[]) => {
 
 export const getCommunitySlug = (communityName: string) =>
 	communityName.replaceAll(' ', '-').toLowerCase();
+
+export const getSlug = (name: string) =>
+	name.replaceAll(' ', '-').toLowerCase();

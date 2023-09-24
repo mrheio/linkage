@@ -65,4 +65,10 @@ export default class ApiError extends ApiResponse {
 	static userAlreadyInCommunity() {
 		return new ApiError('User is already part of this community');
 	}
+
+	static postNotFound() {
+		return new ApiError('Post not found', {
+			status: HTTP_STATUS_CODE.NOT_FOUND,
+		});
+	}
 }

@@ -20,10 +20,10 @@ export const comments = pgTable('comments', {
 	deleted_at: timestamp('deleted_at'),
 	post_id: integer('post_id')
 		.notNull()
-		.references(() => posts.id),
+		.references(() => posts.id, { onDelete: 'cascade' }),
 	created_by_id: uuid('created_by_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	reply_to_id: integer('reply_to_id'),
 });
 

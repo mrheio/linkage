@@ -38,6 +38,21 @@ export const updateCommunitySchema = z.object({
 	owner_id: z.string().uuid().optional(),
 });
 
+export const addPostSchema = z.object({
+	title: z.string().trim().min(3),
+	content: z.string().trim().min(1),
+	created_by_id: z.string().uuid(),
+	community_id: z.number().positive(),
+});
+
+export const updatePostSchema = z.object({
+	title: z.string().trim().min(3).optional(),
+	content: z.string().trim().min(1).optional(),
+	slug: z.string().trim().min(3).optional(),
+	upvotes: z.number().positive().optional(),
+	downvotes: z.number().positive().optional(),
+});
+
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
@@ -47,3 +62,6 @@ export type DeleteUserData = z.infer<typeof deleteUserSchema>;
 
 export type AddCommunityData = z.infer<typeof addCommunitySchema>;
 export type UpdateCommunityData = z.infer<typeof updateCommunitySchema>;
+
+export type AddPostData = z.infer<typeof addPostSchema>;
+export type UpdatePostData = z.infer<typeof updatePostSchema>;

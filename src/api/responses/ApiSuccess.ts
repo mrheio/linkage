@@ -108,4 +108,26 @@ export default class ApiSuccess extends ApiResponse {
 			status: HTTP_STATUS_CODE.NO_CONTENT,
 		});
 	}
+
+	static getPosts(posts) {
+		return new ApiSuccess('Posts returned', { payload: { items: posts } });
+	}
+
+	static getPost(post) {
+		return new ApiSuccess('Post returned', { payload: post });
+	}
+
+	static addPost() {
+		return new ApiSuccess('Post added', {
+			status: HTTP_STATUS_CODE.CREATED,
+		});
+	}
+
+	static updatePost() {
+		return new ApiSuccess('Post updated');
+	}
+
+	static deletePost() {
+		return new ApiSuccess('', { status: HTTP_STATUS_CODE.NO_CONTENT });
+	}
 }

@@ -2,12 +2,14 @@ import { ZodSchema } from 'zod';
 import { ApiError } from '~/api/responses';
 import {
 	addCommunitySchema,
+	addPostSchema,
 	positiveNumberSchema,
 	refreshSessionSchema,
 	sessionSchema,
 	signInSchema,
 	signUpSchema,
 	updateCommunitySchema,
+	updatePostSchema,
 	updateUserSchema,
 	uuidSchema,
 } from '~/schemas';
@@ -53,6 +55,12 @@ const validateAddCommunityData = (data: unknown) =>
 const validateUpdateCommunityData = (data: unknown) =>
 	validateData(data, updateCommunitySchema);
 
+const validateAddPostData = (data: unknown) =>
+	validateData(data, addPostSchema);
+
+const validateUpdatePostData = (data: unknown) =>
+	validateData(data, updatePostSchema);
+
 export const validationService = {
 	validateUuid,
 	validatePositiveNumber,
@@ -63,4 +71,6 @@ export const validationService = {
 	validateUpdateUserData,
 	validateAddCommunityData,
 	validateUpdateCommunityData,
+	validateAddPostData,
+	validateUpdatePostData,
 };

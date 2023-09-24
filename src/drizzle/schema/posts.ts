@@ -23,8 +23,10 @@ export const posts = pgTable('posts', {
 	deleted_at: timestamp('deleted_at'),
 	created_by_id: uuid('created_by_id')
 		.notNull()
-		.references(() => users.id),
-	community_id: integer('community_id'),
+		.references(() => users.id, { onDelete: 'cascade' }),
+	community_id: integer('community_id')
+		.notNull()
+		.references(() => communities.id, { onDelete: 'cascade' }),
 });
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
