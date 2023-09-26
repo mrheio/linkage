@@ -26,7 +26,7 @@ const validateData = <T>(data: unknown, schema: ZodSchema<T>) => {
 
 const validateUuid = (id: unknown) => validateData(id, uuidSchema);
 
-const validatePositiveNumber = (val: number | string) => {
+const validatePositiveNumber = (val: unknown) => {
 	let num = val;
 
 	if (typeof num === 'string') {

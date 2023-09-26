@@ -1,63 +1,35 @@
-import { and, eq, inArray, notInArray } from 'drizzle-orm';
+import { eq, inArray, notInArray } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { communities, db, users, usersToCommunities } from '~/drizzle';
-import { UpdateCommunityData } from '~/schemas';
-import { getCommunitySlug, removeSensitiveUserData } from '~/utils';
+import { getSlug } from '~/utils';
 import { validationService } from './validation.service';
 
 const getCommunities = async (
 	{ includeMembers } = { includeMembers: false },
 ) => {
-	if (includeMembers) {
-		const result = await db
-			.select({
-				id: communities.id,
-				name: communities.name,
-				description: communities.description,
-				slug: communities.slug,
-				created_at: communities.created_at,
-				updated_at: communities.updated_at,
-				deleted_at: communities.deleted_at,
-				owner_id: communities.owner_id,
-				user: users,
-			})
-			.from(communities)
-			.innerJoin(
-				usersToCommunities,
-				eq(communities.id, usersToCommunities.community_id),
-			)
-			.innerJoin(users, eq(users.id, usersToCommunities.user_id));
+	const res = await db.query.communities.findMany({
+		with: { members: includeMembers ? true : undefined },
+	});
 
-		let data: (Omit<(typeof result)[0], 'user'> & { members: any[] })[] =
-			[];
+	return res;
+};
 
-		for (const x of result) {
-			const found = data.find((e) => e.id === x.id);
-			if (found) {
-				data = [
-					...data.filter((e) => e.id !== found.id),
-					{
-						...found,
-						members: [
-							...found.members,
-							removeSensitiveUserData(x.user),
-						],
-					},
-				];
-			} else {
-				const { user, ...rest } = x;
-				data = [
-					...data,
-					{ ...rest, members: [removeSensitiveUserData(user)] },
-				];
-			}
-		}
+const getCommunity = async (
+	cid: string | number,
+	{ includeMembers } = { includeMembers: false },
+) => {
+	const communityId = validationService.validatePositiveNumber(cid);
 
-		return data;
+	const res = await db.query.communities.findFirst({
+		with: { members: includeMembers ? true : undefined },
+		where: (communities, { eq }) => eq(communities.id, communityId),
+	});
+
+	if (!res) {
+		throw ApiError.notFound();
 	}
 
-	const result = await db.select().from(communities);
-	return result;
+	return res;
 };
 
 const getUserCommunities = async (
@@ -72,6 +44,7 @@ const getUserCommunities = async (
 		})
 		.from(usersToCommunities)
 		.where(eq(usersToCommunities.user_id, userId));
+
 	const result = await db
 		.select()
 		.from(communities)
@@ -84,7 +57,7 @@ const getUserCommunities = async (
 	return result;
 };
 
-const addCommunity = async (data: unknown) => {
+const createCommunity = async (data: unknown) => {
 	let communityData = validationService.validateAddCommunityData(data);
 
 	const foundUser = await db
@@ -93,14 +66,14 @@ const addCommunity = async (data: unknown) => {
 		.where(eq(users.id, communityData.owner_id));
 
 	if (!foundUser.length) {
-		throw ApiError.userNotFound();
+		throw ApiError.notFound();
 	}
 
 	const res = await db
 		.insert(communities)
 		.values({
 			...communityData,
-			slug: getCommunitySlug(communityData.name),
+			slug: getSlug(communityData.name),
 			created_by_id: communityData.owner_id,
 		})
 		.returning();
@@ -108,64 +81,35 @@ const addCommunity = async (data: unknown) => {
 	await db
 		.insert(usersToCommunities)
 		.values({ user_id: communityData.owner_id, community_id: res[0].id });
+
+	return res[0];
 };
 
-const updateCommunity = async (cid: number, data: unknown) => {
+const updateCommunity = async (cid: string | number, data: unknown) => {
 	const communityId = validationService.validatePositiveNumber(cid);
-	const communityData = validationService.validateUpdateCommunityData(data);
-	let updateData: UpdateCommunityData & { slug?: string } = communityData;
+	let communityData = validationService.validateUpdateCommunityData(data);
 
-	if (updateData.name) {
-		updateData = { ...updateData, slug: getCommunitySlug(updateData.name) };
+	if (communityData.name) {
+		communityData = { ...communityData, slug: getSlug(communityData.name) };
 	}
 
 	const res = await db
 		.update(communities)
-		.set(updateData)
-		.where(eq(communities.id, communityId));
+		.set(communityData)
+		.where(eq(communities.id, communityId))
+		.returning();
 
-	if (!res.rowCount) {
-		throw ApiError.communityNotFound();
+	if (!res.length) {
+		throw ApiError.notFound();
 	}
-};
 
-const addUserToCommunity = async (uid: string, cid: number) => {
-	const userId = validationService.validateUuid(uid);
-	const communityId = validationService.validatePositiveNumber(cid);
-
-	try {
-		await db
-			.insert(usersToCommunities)
-			.values({ user_id: userId, community_id: communityId });
-	} catch (e) {
-		// TODO: refactor the way sql errors are handled
-		if ((e as any).code === '23505') {
-			throw ApiError.userAlreadyInCommunity();
-		}
-
-		throw e;
-	}
-};
-
-const deleteUserFromCommunity = async (uid: string, cid: number) => {
-	const userId = validationService.validateUuid(uid);
-	const communityId = validationService.validatePositiveNumber(cid);
-
-	await db
-		.delete(usersToCommunities)
-		.where(
-			and(
-				eq(usersToCommunities.user_id, userId),
-				eq(usersToCommunities.community_id, communityId),
-			),
-		);
+	return res[0];
 };
 
 export const communitiesService = {
 	getCommunities,
+	getCommunity,
 	getUserCommunities,
-	addCommunity,
+	createCommunity,
 	updateCommunity,
-	addUserToCommunity,
-	deleteUserFromCommunity,
 };

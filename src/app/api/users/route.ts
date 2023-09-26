@@ -1,3 +1,3 @@
-import { getUsers } from '~/api';
+import { usersAPI } from '~/api';
 
-export { getUsers as GET };
+export const GET = usersAPI.GET.MANY;

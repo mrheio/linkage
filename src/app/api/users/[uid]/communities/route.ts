@@ -1,3 +1,3 @@
-import { getUserCommunities } from '~/api';
+import { communitiesAPI } from '~/api';
 
-export { getUserCommunities as GET };
+export const GET = communitiesAPI.GET.USER;

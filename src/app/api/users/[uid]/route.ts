@@ -1,3 +1,4 @@
-import { deleteUser, patchUser } from '~/api';
+import { usersAPI } from '~/api';
 
-export { deleteUser as DELETE, patchUser as PATCH };
+export const PATCH = usersAPI.PATCH;
+export const DELETE = usersAPI.DELETE;

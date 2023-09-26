@@ -40,12 +40,6 @@ export default class ApiError extends ApiResponse {
 		return new ApiError('This username is taken');
 	}
 
-	static userNotFound() {
-		return new ApiError('No user was found', {
-			status: HTTP_STATUS_CODE.NOT_FOUND,
-		});
-	}
-
 	static invalidJwt() {
 		return new ApiError('Provided JWT has invalid format');
 	}
@@ -56,19 +50,14 @@ export default class ApiError extends ApiResponse {
 		});
 	}
 
-	static communityNotFound() {
-		return new ApiError('No community was found', {
-			status: HTTP_STATUS_CODE.NOT_FOUND,
-		});
-	}
-
 	static userAlreadyInCommunity() {
 		return new ApiError('User is already part of this community');
 	}
 
-	static postNotFound() {
-		return new ApiError('Post not found', {
+	static notFound(details?: unknown) {
+		return new ApiError('Resource not found', {
 			status: HTTP_STATUS_CODE.NOT_FOUND,
+			details,
 		});
 	}
 }

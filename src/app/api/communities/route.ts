@@ -1,3 +1,4 @@
-import { getCommunities, postCommunity } from '~/api';
+import { communitiesAPI } from '~/api';
 
-export { getCommunities as GET, postCommunity as POST };
+export const GET = communitiesAPI.GET.MANY;
+export const POST = communitiesAPI.POST;

@@ -55,13 +55,13 @@ const signIn = async (data: unknown) => {
 		.where(eq(users.username, signInData.username));
 
 	if (!result.length) {
-		throw ApiError.userNotFound();
+		throw ApiError.notFound();
 	}
 
 	const user = result[0];
 
 	if (!!user.deleted_at) {
-		throw ApiError.userNotFound();
+		throw ApiError.notFound();
 	}
 
 	const doPasswordsMatch = securityService.comparePasswords(
@@ -70,7 +70,7 @@ const signIn = async (data: unknown) => {
 	);
 
 	if (!doPasswordsMatch) {
-		throw ApiError.userNotFound();
+		throw ApiError.notFound();
 	}
 
 	return generateTokens(user);
@@ -86,7 +86,7 @@ const refreshSession = async (data: unknown) => {
 		.where(eq(users.id, payload.id));
 
 	if (!result.length) {
-		throw ApiError.userNotFound();
+		throw ApiError.notFound();
 	}
 
 	const user = result[0];

@@ -1,3 +1,4 @@
-import { addUserToCommunity, deleteUserFromCommunity } from '~/api';
+import { relationsAPI } from '~/api';
 
-export { deleteUserFromCommunity as DELETE, addUserToCommunity as POST };
+export const POST = relationsAPI.USER_COMMUNITY.POST;
+export const DELETE = relationsAPI.USER_COMMUNITY.DELETE;

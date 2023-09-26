@@ -5,57 +5,69 @@ import { ApiError, ApiSuccess } from './responses';
 const getPosts = async (request: NextRequest) => {
 	try {
 		const res = await postsService.getPosts();
-		return ApiSuccess.getPosts(res).toNextResponse();
+		return ApiSuccess.getMany(res).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-const getPost = async (request: NextRequest, context) => {
+const getPost = async (
+	request: NextRequest,
+	context: { params: { pid: string } },
+) => {
 	const { pid } = context.params;
 
 	try {
 		const res = await postsService.getPost(pid);
-		return ApiSuccess.getPost(res).toNextResponse();
+		return ApiSuccess.getOne(res).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-const postPost = async (request: NextRequest, context) => {
+const postPost = async (
+	request: NextRequest,
+	context: { params: { uid: string; cid: string } },
+) => {
 	const { uid, cid } = context.params;
 	const data = await request.json();
 
 	try {
-		await postsService.addPost({
+		await postsService.createPost({
 			...data,
 			created_by_id: uid,
 			community_id: cid,
 		});
-		return ApiSuccess.addPost().toNextResponse();
+		return ApiSuccess.created().toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-const patchPost = async (request: NextRequest, context) => {
+const patchPost = async (
+	request: NextRequest,
+	context: { params: { pid: string } },
+) => {
 	const { pid } = context.params;
 	const data = await request.json();
 
 	try {
 		await postsService.updatePost(pid, data);
-		return ApiSuccess.updatePost().toNextResponse();
+		return ApiSuccess.updated().toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-const deletePost = async (request: NextRequest, context) => {
+const deletePost = async (
+	request: NextRequest,
+	context: { params: { pid: string } },
+) => {
 	const { pid } = context.params;
 
 	try {
 		await postsService.deletePost(pid);
-		return ApiSuccess.deletePost().toNoContentResponse();
+		return ApiSuccess.deleted().toNoContentResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}

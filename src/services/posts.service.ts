@@ -5,33 +5,34 @@ import { getSlug } from '~/utils';
 import { validationService } from './validation.service';
 
 const getPosts = async () => {
-	const result = await db.select().from(posts);
-	return result;
+	const res = await db.select().from(posts);
+	return res;
 };
 
-const getPost = async (pid: number) => {
+const getPost = async (pid: string | number) => {
 	const postId = validationService.validatePositiveNumber(pid);
 
-	const result = await db.select().from(posts).where(eq(posts.id, postId));
+	const res = await db.select().from(posts).where(eq(posts.id, postId));
 
-	if (!result.length) {
-		throw ApiError.postNotFound();
+	if (!res.length) {
+		throw ApiError.notFound();
 	}
 
-	return result[0];
+	return res[0];
 };
 
-const addPost = async (data: unknown) => {
+const createPost = async (data: unknown) => {
 	const postData = validationService.validateAddPostData(data);
 
-	await db
+	const res = await db
 		.insert(posts)
-		.values({ ...postData, slug: getSlug(postData.title) });
+		.values({ ...postData, slug: getSlug(postData.title) })
+		.returning();
 
-	return;
+	return res[0];
 };
 
-const updatePost = async (pid: number, data: unknown) => {
+const updatePost = async (pid: string | number, data: unknown) => {
 	const postId = validationService.validatePositiveNumber(pid);
 	let postData = validationService.validateUpdatePostData(data);
 
@@ -42,14 +43,17 @@ const updatePost = async (pid: number, data: unknown) => {
 	const res = await db
 		.update(posts)
 		.set(postData)
-		.where(eq(posts.id, postId));
+		.where(eq(posts.id, postId))
+		.returning();
 
-	if (!res.rowCount) {
-		throw ApiError.postNotFound();
+	if (!res.length) {
+		throw ApiError.notFound();
 	}
+
+	return res[0];
 };
 
-const deletePost = async (pid: number) => {
+const deletePost = async (pid: string | number) => {
 	const postId = validationService.validatePositiveNumber(pid);
 
 	await db.delete(posts).where(eq(posts.id, postId));
@@ -58,7 +62,7 @@ const deletePost = async (pid: number) => {
 export const postsService = {
 	getPosts,
 	getPost,
-	addPost,
+	createPost,
 	updatePost,
 	deletePost,
 };

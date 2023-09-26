@@ -35,6 +35,7 @@ export const addCommunitySchema = z.object({
 export const updateCommunitySchema = z.object({
 	name: z.string().trim().min(3).optional(),
 	description: z.string().optional(),
+	slug: z.string().trim().min(3).optional(),
 	owner_id: z.string().uuid().optional(),
 });
 

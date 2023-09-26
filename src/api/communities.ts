@@ -1,9 +1,8 @@
 import { NextRequest } from 'next/server';
 import { communitiesService } from '~/services';
 import { ApiError, ApiSuccess } from './responses';
-import { withAdminOrOwner } from './utils';
 
-export const getCommunities = async (request: NextRequest) => {
+const getCommunities = async (request: NextRequest) => {
 	const { searchParams } = new URL(request.url);
 	const includeMembers = searchParams.get('includeMembers') === 'true';
 
@@ -11,7 +10,25 @@ export const getCommunities = async (request: NextRequest) => {
 		const communities = await communitiesService.getCommunities({
 			includeMembers,
 		});
-		return ApiSuccess.getCommunities(communities).toNextResponse();
+		return ApiSuccess.getMany(communities).toNextResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};
+
+const getCommunity = async (
+	request: NextRequest,
+	context: { params: { cid: string } },
+) => {
+	const { cid } = context.params;
+	const { searchParams } = new URL(request.url);
+	const includeMembers = searchParams.get('includeMembers') === 'true';
+
+	try {
+		const community = await communitiesService.getCommunity(cid, {
+			includeMembers,
+		});
+		return ApiSuccess.getOne(community).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
@@ -29,7 +46,7 @@ export const getUserCommunities = async (
 		const communities = await communitiesService.getUserCommunities(uid, {
 			reverse,
 		});
-		return ApiSuccess.getUserCommunities(communities).toNextResponse();
+		return ApiSuccess.getMany(communities).toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
@@ -39,8 +56,8 @@ export const postCommunity = async (request: NextRequest) => {
 	const data = await request.json();
 
 	try {
-		await communitiesService.addCommunity(data);
-		return ApiSuccess.addCommunity().toNextResponse();
+		await communitiesService.createCommunity(data);
+		return ApiSuccess.created().toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
@@ -48,47 +65,21 @@ export const postCommunity = async (request: NextRequest) => {
 
 export const patchCommunity = async (
 	request: NextRequest,
-	context: { params: { cid: number } },
+	context: { params: { cid: string } },
 ) => {
 	const { cid } = context.params;
 	const data = await request.json();
 
 	try {
 		await communitiesService.updateCommunity(cid, data);
-		return ApiSuccess.updateCommunity().toNextResponse();
+		return ApiSuccess.updated().toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-export const addUserToCommunity = withAdminOrOwner(
-	async (
-		request: NextRequest,
-		context: { params: { uid: string; cid: number } },
-	) => {
-		const { uid, cid } = context.params;
-
-		try {
-			await communitiesService.addUserToCommunity(uid, cid);
-			return ApiSuccess.addUserToCommunity().toNextResponse();
-		} catch (e) {
-			return ApiError.returnOrThrow(e).toNextResponse();
-		}
-	},
-);
-
-export const deleteUserFromCommunity = withAdminOrOwner(
-	async (
-		request: NextRequest,
-		context: { params: { uid: string; cid: number } },
-	) => {
-		const { uid, cid } = context.params;
-
-		try {
-			await communitiesService.deleteUserFromCommunity(uid, cid);
-			return ApiSuccess.deleteUserFromCommunity().toNoContentResponse();
-		} catch (e) {
-			return ApiError.returnOrThrow(e).toNextResponse();
-		}
-	},
-);
+export const communitiesAPI = {
+	POST: postCommunity,
+	GET: { MANY: getCommunities, ONE: getCommunity, USER: getUserCommunities },
+	PATCH: patchCommunity,
+};

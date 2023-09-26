@@ -1,3 +1,4 @@
-import { patchCommunity } from '~/api';
+import { communitiesAPI } from '~/api';
 
-export { patchCommunity as PATCH };
+export const GET = communitiesAPI.GET.ONE;
+export const PATCH = communitiesAPI.PATCH;
