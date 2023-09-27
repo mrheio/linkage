@@ -54,6 +54,19 @@ export const updatePostSchema = z.object({
 	downvotes: z.number().positive().optional(),
 });
 
+export const createCommentSchema = z.object({
+	content: z.string(),
+	post_id: z.number().positive(),
+	created_by_id: z.string().uuid(),
+	reply_to_id: z.number().positive().optional(),
+});
+
+export const updateCommentSchema = z.object({
+	content: z.string().optional(),
+	upvotes: z.number().positive().optional(),
+	downvotes: z.number().positive().optional(),
+});
+
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
@@ -66,3 +79,6 @@ export type UpdateCommunityData = z.infer<typeof updateCommunitySchema>;
 
 export type AddPostData = z.infer<typeof addPostSchema>;
 export type UpdatePostData = z.infer<typeof updatePostSchema>;
+
+export type CreateCommentData = z.infer<typeof createCommentSchema>;
+export type UpdateCommentData = z.infer<typeof updateCommunitySchema>;

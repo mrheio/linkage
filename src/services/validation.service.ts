@@ -3,11 +3,13 @@ import { ApiError } from '~/api/responses';
 import {
 	addCommunitySchema,
 	addPostSchema,
+	createCommentSchema,
 	positiveNumberSchema,
 	refreshSessionSchema,
 	sessionSchema,
 	signInSchema,
 	signUpSchema,
+	updateCommentSchema,
 	updateCommunitySchema,
 	updatePostSchema,
 	updateUserSchema,
@@ -61,6 +63,12 @@ const validateAddPostData = (data: unknown) =>
 const validateUpdatePostData = (data: unknown) =>
 	validateData(data, updatePostSchema);
 
+const validateCreateCommentData = (data: unknown) =>
+	validateData(data, createCommentSchema);
+
+const validateUpdateCommentData = (data: unknown) =>
+	validateData(data, updateCommentSchema);
+
 export const validationService = {
 	validateUuid,
 	validatePositiveNumber,
@@ -73,4 +81,6 @@ export const validationService = {
 	validateUpdateCommunityData,
 	validateAddPostData,
 	validateUpdatePostData,
+	validateCreateCommentData,
+	validateUpdateCommentData,
 };
