@@ -1,17 +1,31 @@
 import { eq, inArray, notInArray } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { communities, db, users, usersToCommunities } from '~/drizzle';
-import { getSlug } from '~/utils';
+import { getSlug, removeSensitiveUserData } from '~/utils';
 import { validationService } from './validation.service';
 
 const getCommunities = async (
 	{ includeMembers } = { includeMembers: false },
 ) => {
 	const res = await db.query.communities.findMany({
-		with: { members: includeMembers ? true : undefined },
+		with: {
+			members: includeMembers ? { with: { user: true } } : undefined,
+		},
 	});
 
-	return res;
+	return includeMembers
+		? res.map((x) => {
+				const { members, ...rest } = x;
+				const aux = [];
+
+				for (const m of members) {
+					const { user } = m as any;
+					aux.push(removeSensitiveUserData(user));
+				}
+
+				return { ...rest, members: aux };
+		  })
+		: res;
 };
 
 const getCommunity = async (
