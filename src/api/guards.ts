@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authService } from '~/services';
+import { authService, communitiesService, postsService } from '~/services';
 import { jwtService } from '~/services/jwt.service';
 import { ApiError } from './responses';
+
+// TODO: refactor api guards
+
+type NextApiFn = (
+	request: NextRequest,
+	context: any,
+) => NextResponse | Promise<NextResponse> | Response | Promise<Response>;
 
 const getBearerToken = (request: NextRequest) => {
 	const authorization = request.headers.get('Authorization');
@@ -14,12 +21,7 @@ const getBearerToken = (request: NextRequest) => {
 	return token;
 };
 
-export const withAuth = (
-	handler: (
-		request: NextRequest,
-		context: any,
-	) => NextResponse | Promise<NextResponse> | Response | Promise<Response>,
-) => {
+export const withAuth = (handler: NextApiFn) => {
 	return async (request: NextRequest, context: any) => {
 		try {
 			const token = getBearerToken(request);
@@ -41,12 +43,7 @@ export const withAuth = (
 	};
 };
 
-export const withAdmin = (
-	handler: (
-		request: NextRequest,
-		context: any,
-	) => NextResponse | Promise<NextResponse> | Response | Promise<Response>,
-) => {
+export const withAdmin = (handler: NextApiFn) => {
 	return async (request: NextRequest, context: any) => {
 		try {
 			const token = getBearerToken(request);
@@ -68,23 +65,23 @@ export const withAdmin = (
 	};
 };
 
-export const withOwner = (
-	handler: (
-		request: NextRequest,
-		context: any,
-	) => NextResponse | Promise<NextResponse> | Response | Promise<Response>,
-) => {
+export const withCommunityOwner = (handler: NextApiFn) => {
 	return async (request: NextRequest, context: any) => {
 		try {
 			const token = getBearerToken(request);
 
 			if (!token) {
-				throw ApiError.unauthorized();
+				throw new Error(
+					'withAuth should be called before withCommunityOwner',
+				);
 			}
 
 			const session = await authService.getSession(token);
+			const { cid } = context.params;
 
-			if (session.id !== context.params.uid) {
+			const community = await communitiesService.getCommunity(cid);
+
+			if (community.created_by_id !== session.id) {
 				throw ApiError.unauthorized();
 			}
 
@@ -95,23 +92,23 @@ export const withOwner = (
 	};
 };
 
-export const withAdminOrOwner = (
-	handler: (
-		request: NextRequest,
-		context: any,
-	) => NextResponse | Promise<NextResponse> | Response | Promise<Response>,
-) => {
+export const withPostOwner = (handler: NextApiFn) => {
 	return async (request: NextRequest, context: any) => {
 		try {
 			const token = getBearerToken(request);
 
 			if (!token) {
-				throw ApiError.unauthorized();
+				throw new Error(
+					'withAuth should be called before withPostOwner',
+				);
 			}
 
 			const session = await authService.getSession(token);
+			const { pid } = context.params;
 
-			if (session.role !== 'admin' && session.id !== context.params.uid) {
+			const post = await postsService.getPost(pid);
+
+			if (post.created_by_id !== session.id) {
 				throw ApiError.unauthorized();
 			}
 

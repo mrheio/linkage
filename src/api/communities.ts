@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { communitiesService } from '~/services';
+import { withAuth } from './guards';
 import { ApiError, ApiSuccess } from './responses';
 
 const getCommunities = async (request: NextRequest) => {
@@ -79,7 +80,7 @@ export const patchCommunity = async (
 };
 
 export const communitiesAPI = {
-	POST: postCommunity,
+	POST: withAuth(postCommunity),
 	GET: { MANY: getCommunities, ONE: getCommunity, USER: getUserCommunities },
 	PATCH: patchCommunity,
 };
