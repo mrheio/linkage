@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
 import { communitiesService } from '~/services';
-import { withAuth } from './guards';
 import { ApiError, ApiSuccess } from './responses';
 
 const getCommunities = async (request: NextRequest) => {
@@ -35,7 +34,7 @@ const getCommunity = async (
 	}
 };
 
-export const getUserCommunities = async (
+const getUserCommunities = async (
 	request: NextRequest,
 	context: { params: { uid: string } },
 ) => {
@@ -53,18 +52,22 @@ export const getUserCommunities = async (
 	}
 };
 
-export const postCommunity = async (request: NextRequest) => {
+const postCommunity = async (
+	request: NextRequest,
+	context: { params: { uid: string } },
+) => {
+	const { uid } = context.params;
 	const data = await request.json();
 
 	try {
-		await communitiesService.createCommunity(data);
+		await communitiesService.createCommunity({ ...data, owner_id: uid });
 		return ApiSuccess.created().toNextResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();
 	}
 };
 
-export const patchCommunity = async (
+const patchCommunity = async (
 	request: NextRequest,
 	context: { params: { cid: string } },
 ) => {
@@ -80,7 +83,7 @@ export const patchCommunity = async (
 };
 
 export const communitiesAPI = {
-	POST: withAuth(postCommunity),
+	POST: postCommunity,
 	GET: { MANY: getCommunities, ONE: getCommunity, USER: getUserCommunities },
 	PATCH: patchCommunity,
 };

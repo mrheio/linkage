@@ -3,8 +3,11 @@ import { ApiError } from '~/api/responses';
 import {
 	addCommunitySchema,
 	addPostSchema,
+	commentSchema,
+	communitySchema,
 	createCommentSchema,
 	positiveNumberSchema,
+	postSchema,
 	refreshSessionSchema,
 	sessionSchema,
 	signInSchema,
@@ -15,6 +18,7 @@ import {
 	updateUserSchema,
 	uuidSchema,
 } from '~/schemas';
+import { apiErrorSchema, apiSuccessSchema } from '~/schemas/api.schema';
 
 const validateData = <T>(data: unknown, schema: ZodSchema<T>) => {
 	const parsed = schema.safeParse(data);
@@ -69,6 +73,13 @@ const validateCreateCommentData = (data: unknown) =>
 const validateUpdateCommentData = (data: unknown) =>
 	validateData(data, updateCommentSchema);
 
+const validateApiSuccess =
+	<T>(schema: ZodSchema<T>, { many } = { many: false }) =>
+	(data: unknown) =>
+		validateData(data, apiSuccessSchema(schema, { many }));
+
+const validateApiError = (data: unknown) => validateData(data, apiErrorSchema);
+
 export const validationService = {
 	validateUuid,
 	validatePositiveNumber,
@@ -83,4 +94,24 @@ export const validationService = {
 	validateUpdatePostData,
 	validateCreateCommentData,
 	validateUpdateCommentData,
+	validateApiError,
+	validateApi: {
+		communities: {
+			get: {
+				many: validateApiSuccess(communitySchema, { many: true }),
+				one: validateApiSuccess(communitySchema),
+			},
+		},
+		posts: {
+			get: {
+				many: validateApiSuccess(postSchema, { many: true }),
+				one: validateApiSuccess(postSchema),
+			},
+		},
+		comments: {
+			get: {
+				many: validateApiSuccess(commentSchema, { many: true }),
+			},
+		},
+	},
 };
