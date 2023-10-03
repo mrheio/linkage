@@ -1,8 +1,10 @@
-import '@picocss/pico';
+import { NextUIProvider } from '@nextui-org/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { ThemeProvider } from '~/providers';
 import Navbar from './_navbar';
+import './globals.css';
 
 const queryClient = new QueryClient();
 
@@ -12,12 +14,16 @@ export default function App({ Component, pageProps }: AppProps) {
 			<Head>
 				<title>Linkage</title>
 			</Head>
-			<QueryClientProvider client={queryClient}>
-				<Navbar />
-				<main className="container">
-					<Component {...pageProps} />
-				</main>
-			</QueryClientProvider>
+			<NextUIProvider>
+				<ThemeProvider>
+					<QueryClientProvider client={queryClient}>
+						<Navbar />
+						<main className="container">
+							<Component {...pageProps} />
+						</main>
+					</QueryClientProvider>
+				</ThemeProvider>
+			</NextUIProvider>
 		</>
 	);
 }
