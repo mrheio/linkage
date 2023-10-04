@@ -17,7 +17,9 @@ const Nav = () => {
 	return (
 		<Navbar>
 			<NavbarBrand>
-				<span className="font-bold text-inherit">Linkage</span>
+				<Link href={ROUTES.HOME}>
+					<span className="font-bold text-inherit">Linkage</span>
+				</Link>
 			</NavbarBrand>
 			<NavbarContent justify="end">
 				<NavbarItem>

@@ -3,7 +3,9 @@ import myfetch from './myfetch';
 import { validationService } from './services';
 
 export const myapi = () => {
-	const BASE_URL = typeof window === undefined ? Config.API_URL : '/api';
+	const BASE_URL = typeof window === 'undefined' ? Config.API_URL : '/api';
+
+	console.log({ BASE_URL });
 
 	return {
 		communities: {

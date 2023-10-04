@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
 				<ThemeProvider>
 					<QueryClientProvider client={queryClient}>
 						<Nav />
-						<main className="min-h-screen max-w-5xl mx-auto">
+						<main className="mx-auto min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
 							<Component {...pageProps} />
 						</main>
 					</QueryClientProvider>
