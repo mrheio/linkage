@@ -57,6 +57,13 @@
       "when": 1695547392380,
       "tag": "0007_wild_red_shift",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1696509340727,
+      "tag": "0008_fancy_ender_wiggin",
+      "breakpoints": true
     }
   ]
 }
