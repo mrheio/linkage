@@ -22,8 +22,6 @@ const SignIn = () => {
 		signIn(data);
 	});
 
-	console.log({ error });
-
 	return (
 		<div className="flex h-full flex-col justify-center">
 			<form onSubmit={handleSignIn} className="w-full [&>*+*]:mt-8">
