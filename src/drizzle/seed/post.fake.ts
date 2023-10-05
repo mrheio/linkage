@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Community, Post, User } from '../schema';
+import { Community, Post, User } from '../../types';
 import { fakeModelDates, getRandomInt } from './utils';
 
 const fakePost = (
@@ -24,8 +24,8 @@ const fakePost = (
 		slug,
 		upvotes,
 		downvotes,
-		created_at: new Date(created_at),
-		updated_at: new Date(updated_at),
+		created_at: new Date(created_at).toString(),
+		updated_at: new Date(updated_at).toString(),
 		deleted_at,
 		created_by_id,
 		community_id,

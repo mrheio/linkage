@@ -18,6 +18,3 @@ export const users = pgTable('users', {
 export const usersRelations = relations(users, ({ many }) => ({
 	communities: many(usersToCommunities),
 }));
-
-export type User = typeof users.$inferSelect;
-export type SafeUser = Omit<User, 'password'>;

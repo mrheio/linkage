@@ -1,4 +1,4 @@
-import { User } from '~/drizzle';
+import { User } from '~/types';
 
 export const removeSensitiveUserData = (user: User) => {
 	const { password, ...rest } = user;

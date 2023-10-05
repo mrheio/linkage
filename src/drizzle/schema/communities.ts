@@ -33,5 +33,3 @@ export const communitiesRelations = relations(communities, ({ one, many }) => ({
 		references: [users.id],
 	}),
 }));
-
-export type Community = typeof communities.$inferSelect;

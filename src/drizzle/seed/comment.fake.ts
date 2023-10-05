@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Comment, Post, User } from '../schema';
+import { Comment, Post, User } from '../../types';
 import { fakeModelDates, getRandomInt } from './utils';
 
 const fakeComment = (users: User[], posts: Post[], id: number): Comment => {
@@ -15,8 +15,8 @@ const fakeComment = (users: User[], posts: Post[], id: number): Comment => {
 		content,
 		upvotes,
 		downvotes,
-		created_at: new Date(created_at),
-		updated_at: new Date(updated_at),
+		created_at: new Date(created_at).toString(),
+		updated_at: new Date(updated_at).toString(),
 		deleted_at,
 		post_id,
 		created_by_id,

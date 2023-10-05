@@ -4,5 +4,6 @@ export * from './comment.schema';
 export * from './community.schema';
 export * from './form.schema';
 export * from './post.schema';
+export * from './relation.schema';
 export * from './session.schema';
 export * from './user.schema';

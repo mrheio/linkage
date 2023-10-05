@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { User } from '../schema/users';
+import { User } from '../../types';
 import { fakeModelDates, getRandomInt } from './utils';
 
 const fakeCommunity = (members: User[], id: number) => {

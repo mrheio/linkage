@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import myfetch from '~/myfetch';
 import { ROUTES } from '~/router';
-import { SignInData } from '~/schemas';
+import { SignInData } from '~/types';
 
 const useSignIn = () => {
 	const queryClient = useQueryClient();

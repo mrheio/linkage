@@ -1,10 +1,5 @@
 import { ZodSchema, z } from 'zod';
 
-const apiManySchema = <T extends ZodSchema>(schema: T) =>
-	z.object({
-		items: z.array(schema),
-	});
-
 export const apiSuccessSchema = <T>(schema: ZodSchema<T>) =>
 	z.object({
 		type: z.literal('success'),
@@ -22,5 +17,3 @@ export const apiErrorSchema = z.object({
 	message: z.string(),
 	details: z.any().nullable(),
 });
-
-export type ApiErrorSchema = z.infer<typeof apiErrorSchema>;

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import { Session } from '~/schemas';
+import { Session } from '~/types';
 import { Config } from '../../config';
 import { jwtService } from './jwt.service';
 import { securityService } from './security.service';

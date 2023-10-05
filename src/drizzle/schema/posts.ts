@@ -39,5 +39,3 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
 		references: [communities.id],
 	}),
 }));
-
-export type Post = typeof posts.$inferSelect;

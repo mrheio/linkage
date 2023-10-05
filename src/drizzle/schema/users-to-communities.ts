@@ -29,5 +29,3 @@ export const usersToCommunitiesRelations = relations(
 		}),
 	}),
 );
-
-export type UserToCommunity = typeof usersToCommunities.$inferSelect;

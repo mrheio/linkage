@@ -1,8 +1,7 @@
 import { Button, Card, CardBody } from '@nextui-org/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { Post } from '~/drizzle';
-import { Session } from '~/schemas';
 import { authService, postsService } from '~/services';
+import { Post, Session } from '~/types';
 import { CookieKey } from '~/utils';
 import PostCard from './_post-card';
 

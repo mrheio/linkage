@@ -6,7 +6,7 @@ import {
 	IconMenu,
 	IconShare3,
 } from '@tabler/icons-react';
-import { Post } from '~/drizzle';
+import { Post } from '~/types';
 
 const PostCard = ({ post }: { post: Post }) => {
 	return (

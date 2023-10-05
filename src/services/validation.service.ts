@@ -3,6 +3,9 @@ import { ApiError } from '~/api/responses';
 import {
 	addCommunitySchema,
 	addPostSchema,
+	apiErrorSchema,
+	apiGetManySuccessSchema,
+	apiSuccessSchema,
 	commentSchema,
 	communitySchema,
 	createCommentSchema,
@@ -18,11 +21,6 @@ import {
 	updateUserSchema,
 	uuidSchema,
 } from '~/schemas';
-import {
-	apiErrorSchema,
-	apiGetManySuccessSchema,
-	apiSuccessSchema,
-} from '~/schemas/api.schema';
 
 const validateData = <T>(data: unknown, schema: ZodSchema<T>) => {
 	const parsed = schema.safeParse(data);
