@@ -40,7 +40,7 @@ const getCommunity = async (
 	});
 
 	if (!res) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	return res;
@@ -80,7 +80,7 @@ const createCommunity = async (data: unknown) => {
 		.where(eq(users.id, communityData.owner_id));
 
 	if (!foundUser.length) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	const res = await db
@@ -114,7 +114,7 @@ const updateCommunity = async (cid: string | number, data: unknown) => {
 		.returning();
 
 	if (!res.length) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	return res[0];

@@ -15,7 +15,7 @@ const getPost = async (pid: string | number) => {
 	const res = await db.select().from(posts).where(eq(posts.id, postId));
 
 	if (!res.length) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	return res[0];
@@ -47,7 +47,7 @@ const updatePost = async (pid: string | number, data: unknown) => {
 		.returning();
 
 	if (!res.length) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	return res[0];

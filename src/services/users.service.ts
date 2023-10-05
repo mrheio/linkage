@@ -16,7 +16,7 @@ const getUser = async (uid: string) => {
 	const res = await db.select().from(users).where(eq(users.id, uid));
 
 	if (!res.length) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	const user = res[0];
@@ -42,7 +42,7 @@ const deleteUser = async (uid: string) => {
 	const result = await db.delete(users).where(eq(users.id, userId));
 
 	if (!result.rowCount) {
-		throw ApiError.notFound();
+		throw ApiError.notFound().generic;
 	}
 
 	return;

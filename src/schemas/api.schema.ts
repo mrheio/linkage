@@ -22,3 +22,5 @@ export const apiErrorSchema = z.object({
 	message: z.string(),
 	details: z.any().nullable(),
 });
+
+export type ApiErrorSchema = z.infer<typeof apiErrorSchema>;

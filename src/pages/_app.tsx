@@ -14,11 +14,11 @@ export default function App({ Component, pageProps }: AppProps) {
 			<Head>
 				<title>Linkage</title>
 			</Head>
-			<NextUIProvider>
+			<NextUIProvider className="h-full">
 				<ThemeProvider>
 					<QueryClientProvider client={queryClient}>
 						<Nav />
-						<main className="mx-auto min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
+						<main className="mx-auto h-full min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
 							<Component {...pageProps} />
 						</main>
 					</QueryClientProvider>

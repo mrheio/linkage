@@ -55,9 +55,18 @@ export default class ApiError extends ApiResponse {
 	}
 
 	static notFound(details?: unknown) {
-		return new ApiError('Resource not found', {
-			status: HTTP_STATUS_CODE.NOT_FOUND,
-			details,
-		});
+		return {
+			user: new ApiError(
+				'User not found. Maybe you mistyped something?',
+				{
+					status: HTTP_STATUS_CODE.NOT_FOUND,
+					details,
+				},
+			),
+			generic: new ApiError('Resource not found', {
+				status: HTTP_STATUS_CODE.NOT_FOUND,
+				details,
+			}),
+		};
 	}
 }

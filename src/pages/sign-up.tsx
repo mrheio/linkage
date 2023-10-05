@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
+import { Button, Input, Link } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useSignUp } from '~/hooks';
@@ -23,46 +23,66 @@ const SignUp = () => {
 	});
 
 	return (
-		<form onSubmit={handleSignUp}>
-			<h1>Create your Linkage account</h1>
-			<div>
-				<label htmlFor="email">Email</label>
-				<input
+		<div className="flex h-full flex-col justify-center">
+			<form onSubmit={handleSignUp} className="w-full [&>*+*]:mt-8">
+				<h1 className="text-4xl font-bold">
+					Create your Linkage account
+				</h1>
+				<Input
 					id="email"
-					aria-invalid={errors.email ? 'true' : undefined}
+					label="Email"
+					labelPlacement="outside"
+					placeholder="example@email.com"
+					isInvalid={!!errors.email}
+					errorMessage={errors.email?.message}
+					size="lg"
 					{...register('email')}
 				/>
-				<small>{errors.email?.message}</small>
-			</div>
-			<div>
-				<label htmlFor="username">Username</label>
-				<input
+				<Input
 					id="username"
-					aria-invalid={errors.username ? 'true' : undefined}
+					label="Username"
+					labelPlacement="outside"
+					placeholder="beautifulusername"
+					isInvalid={!!errors.username}
+					errorMessage={errors.username?.message}
+					size="lg"
 					{...register('username')}
 				/>
-				<small>{errors.username?.message}</small>
-			</div>
-			<div>
-				<label htmlFor="password">Password</label>
-				<input
+				<Input
 					id="password"
 					type="password"
-					aria-invalid={errors.password ? 'true' : undefined}
+					label="Password"
+					labelPlacement="outside"
+					placeholder="supersecretpassword"
+					isInvalid={!!errors.password}
+					errorMessage={errors.password?.message}
+					size="lg"
 					{...register('password')}
 				/>
-				<small>{errors.password?.message}</small>
-			</div>
-			<button type="submit" aria-busy={isSignUpRunning}>
-				Create account
-			</button>
-			<div>
-				<small>{(error as any)?.message}</small>
-			</div>
-			<Link href={ROUTES.SIGN_IN}>
-				Already have an account? Enter your account here
-			</Link>
-		</form>
+				<p className="font-semibold text-danger-400">
+					{(error as any)?.message}
+				</p>
+				<Button
+					fullWidth
+					color="primary"
+					variant="flat"
+					type="submit"
+					isLoading={isSignUpRunning}
+					size="lg"
+				>
+					Create Account
+				</Button>
+
+				<Button
+					as={Link}
+					variant="ghost"
+					fullWidth
+					href={ROUTES.SIGN_IN}
+				>
+					Already have an account? Enter your account here
+				</Button>
+			</form>
+		</div>
 	);
 };
 
