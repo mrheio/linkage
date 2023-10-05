@@ -8,11 +8,20 @@ import {
 	Spinner,
 } from '@nextui-org/react';
 import { ThemeButton } from '~/components';
-import { useSession } from '~/hooks';
+import { useSession, useSignOut } from '~/hooks';
 import { ROUTES } from '~/router';
 
 const Nav = () => {
 	const { data: session, isLoading: isSessionLoading } = useSession();
+	const {
+		mutate: signOut,
+		isLoading: isSignOutRunning,
+		isSuccess: isSignOutSuccess,
+	} = useSignOut();
+
+	const handleSignOut = () => {
+		signOut();
+	};
 
 	return (
 		<Navbar>
@@ -50,6 +59,11 @@ const Nav = () => {
 						</Button>
 					)}
 				</NavbarItem>
+				{!isSessionLoading && session && (
+					<NavbarItem>
+						<Button onClick={handleSignOut}>Sign Out</Button>
+					</NavbarItem>
+				)}
 			</NavbarContent>
 		</Navbar>
 	);
