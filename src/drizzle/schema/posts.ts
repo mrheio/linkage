@@ -16,10 +16,10 @@ export const posts = pgTable('posts', {
 	title: varchar('title', { length: 256 }).notNull(),
 	content: text('content').notNull(),
 	slug: varchar('slug', { length: 256 }).notNull(),
-	upvotes: integer('upvotes'),
-	downvotes: integer('downvotes'),
-	created_at: timestamp('created_at').defaultNow(),
-	updated_at: timestamp('updated_at').defaultNow(),
+	upvotes: integer('upvotes').notNull().default(0),
+	downvotes: integer('downvotes').notNull().default(0),
+	created_at: timestamp('created_at').notNull().defaultNow(),
+	updated_at: timestamp('updated_at').notNull().defaultNow(),
 	deleted_at: timestamp('deleted_at'),
 	created_by_id: uuid('created_by_id')
 		.notNull()

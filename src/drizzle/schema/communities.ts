@@ -16,8 +16,8 @@ export const communities = pgTable('communities', {
 	name: varchar('name', { length: 256 }).notNull(),
 	description: text('description'),
 	slug: varchar('slug', { length: 256 }).notNull(),
-	created_at: date('created_at').defaultNow(),
-	updated_at: date('updated_at').defaultNow(),
+	created_at: date('created_at').notNull().defaultNow(),
+	updated_at: date('updated_at').notNull().defaultNow(),
 	deleted_at: date('deleted_at'),
 	owner_id: uuid('owner_id')
 		.notNull()
