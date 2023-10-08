@@ -4,12 +4,13 @@ import { db, users } from '~/drizzle';
 import {
 	removeSensitiveUserData,
 	removeSensitiveUserDataFromList,
+	stringifyDates,
 } from '~/utils';
 import { validationService } from './validation.service';
 
 const getUsers = async () => {
 	const res = await db.select().from(users);
-	return removeSensitiveUserDataFromList(res);
+	return removeSensitiveUserDataFromList(res.map((x) => stringifyDates(x)));
 };
 
 const getUser = async (uid: string) => {
@@ -20,7 +21,7 @@ const getUser = async (uid: string) => {
 	}
 
 	const user = res[0];
-	return removeSensitiveUserData(user);
+	return removeSensitiveUserData(stringifyDates(user));
 };
 
 const updateUser = async (uid: string, data: unknown) => {
@@ -29,7 +30,7 @@ const updateUser = async (uid: string, data: unknown) => {
 
 	const res = await db
 		.update(users)
-		.set(userData)
+		.set(stringifyDates(userData))
 		.where(eq(users.id, userId))
 		.returning();
 

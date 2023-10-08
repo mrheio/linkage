@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { date, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { usersToCommunities } from './users-to-communities';
 
 export const users = pgTable('users', {
@@ -10,9 +10,9 @@ export const users = pgTable('users', {
 	role: varchar('role', { enum: ['user', 'admin'] })
 		.notNull()
 		.default('user'),
-	created_at: date('created_at').notNull().defaultNow(),
-	updated_at: date('updated_at').notNull().defaultNow(),
-	deleted_at: date('deleted_at'),
+	created_at: timestamp('created_at').notNull().defaultNow(),
+	updated_at: timestamp('updated_at').notNull().defaultNow(),
+	deleted_at: timestamp('deleted_at'),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

@@ -19,6 +19,7 @@ import {
 	updateCommunitySchema,
 	updatePostSchema,
 	updateUserSchema,
+	userSchema,
 	uuidSchema,
 } from '~/schemas';
 
@@ -103,6 +104,11 @@ export const validationService = {
 	validateUpdateCommentData,
 	validateApiError,
 	validateApi: {
+		users: {
+			get: {
+				one: validateApiSuccess(userSchema),
+			},
+		},
 		communities: {
 			get: {
 				many: validateApiGetManySuccess(communitySchema),

@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm';
 import {
-	date,
 	pgTable,
 	serial,
 	text,
+	timestamp,
 	uuid,
 	varchar,
 } from 'drizzle-orm/pg-core';
@@ -16,9 +16,9 @@ export const communities = pgTable('communities', {
 	name: varchar('name', { length: 256 }).notNull(),
 	description: text('description'),
 	slug: varchar('slug', { length: 256 }).notNull(),
-	created_at: date('created_at').notNull().defaultNow(),
-	updated_at: date('updated_at').notNull().defaultNow(),
-	deleted_at: date('deleted_at'),
+	created_at: timestamp('created_at').notNull().defaultNow(),
+	updated_at: timestamp('updated_at').notNull().defaultNow(),
+	deleted_at: timestamp('deleted_at'),
 	owner_id: uuid('owner_id')
 		.notNull()
 		.references(() => users.id),

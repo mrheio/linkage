@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async (
 	const token = ctx.req.cookies[CookieKey.AccessToken] as string;
 	const session = await authService.getSession(token);
 	const profile = await usersService.getUser(session.id);
-	return { props: { profile: JSON.parse(JSON.stringify(profile)) } };
+	return { props: { profile } };
 };
 
 const Profile = (

@@ -1,13 +1,29 @@
-import { Config } from '../config';
 import myfetch from './myfetch';
 import { validationService } from './services';
 
 export const myapi = () => {
-	const BASE_URL = typeof window === 'undefined' ? Config.API_URL : '/api';
-
-	console.log({ BASE_URL });
+	const BASE_URL = '/api';
 
 	return {
+		users: {
+			get: {
+				one: async (uid: string) => {
+					const data = await myfetch(`${BASE_URL}/users/${uid}`)
+						.GET()
+						.json();
+					return validationService.validateApi.users.get.one(data);
+				},
+			},
+			patch: async (uid: string, data: unknown) => {
+				const res = await myfetch(`${BASE_URL}/users/${uid}`)
+					.PATCH(data)
+					.json();
+				return res;
+			},
+			delete: async (uid: string) => {
+				await myfetch(`${BASE_URL}/users/${uid}`).DELETE().run();
+			},
+		},
 		communities: {
 			get: {
 				many: async (
