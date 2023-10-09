@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import myfetch from '~/myfetch';
+import { myapi } from '~/myapi';
 
 const useUserCommunities = (
 	uid: string,
@@ -9,11 +9,10 @@ const useUserCommunities = (
 		initialData,
 		queryKey: ['communities', uid, { reverse }],
 		queryFn: async ({ queryKey }) => {
-			const result = await myfetch(
-				`/api/users/${queryKey[1]}/communities?reverse=${reverse}`,
-			)
-				.GET()
-				.json();
+			const [, uid, { reverse }] = queryKey;
+			const result = await myapi.communities.get.user(uid, {
+				reverse,
+			});
 			return result.payload.items;
 		},
 	});

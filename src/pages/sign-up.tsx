@@ -23,7 +23,7 @@ const SignUp = () => {
 	});
 
 	return (
-		<div className="flex h-full flex-col justify-center">
+		<div className="flex min-h-screen flex-col justify-center">
 			<form onSubmit={handleSignUp} className="w-full [&>*+*]:mt-8">
 				<h1 className="text-4xl font-bold">
 					Create your Linkage account

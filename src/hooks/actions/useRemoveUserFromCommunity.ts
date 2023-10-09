@@ -1,14 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import myfetch from '~/myfetch';
+import { myapi } from '~/myapi';
 
 const useDeleteUserFromCommunity = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: async ({ uid, cid }: { uid: string; cid: number }) => {
-			await myfetch(`/api/communities/${cid}/users/${uid}`)
-				.DELETE()
-				.run();
+			await myapi.communities.removeUser(uid, cid);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries(['communities']);

@@ -7,7 +7,7 @@ const queryClient = new QueryClient();
 
 const Providers = ({ children }: { children: ReactNode }) => {
 	return (
-		<NextUIProvider className="h-full">
+		<NextUIProvider>
 			<ThemeProvider>
 				<QueryClientProvider client={queryClient}>
 					{children}

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import myfetch from '~/myfetch';
+import { myapi } from '~/myapi';
 
 const useUpdateUser = (
 	onSuccess?: (
@@ -13,7 +13,7 @@ const useUpdateUser = (
 ) => {
 	return useMutation({
 		mutationFn: async ({ uid, data }: { uid: string; data: unknown }) => {
-			await myfetch(`/api/users/${uid}`).PATCH(data).run();
+			await myapi.users.patch(uid, data);
 		},
 		onSuccess,
 	});

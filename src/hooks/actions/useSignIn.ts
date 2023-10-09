@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import myfetch from '~/myfetch';
+import { myapi } from '~/myapi';
 import { ROUTES } from '~/router';
 import { SignInData } from '~/types';
 
@@ -10,7 +10,7 @@ const useSignIn = () => {
 
 	return useMutation({
 		mutationFn: async (data: SignInData) => {
-			await myfetch('/api/auth/sign-in').POST(data).run();
+			await myapi.auth.signIn(data);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries(['session']);

@@ -3,6 +3,23 @@ import myfetch from './myfetch';
 import { validationService } from './services';
 
 export const myapi = {
+	auth: {
+		signIn: async (data: unknown) => {
+			await myfetch(`${Config.API_URL()}/auth/sign-in`).POST(data).run();
+		},
+		signOut: async () => {
+			await myfetch(`${Config.API_URL()}/auth/sign-out`).POST().run();
+		},
+		signUp: async (data: unknown) => {
+			await myfetch(`${Config.API_URL()}/auth/sign-up`).POST(data).run();
+		},
+		session: async () => {
+			const res = await myfetch(`${Config.API_URL()}/auth/session`)
+				.GET()
+				.json();
+			return res;
+		},
+	},
 	users: {
 		get: {
 			one: async (uid: string) => {
@@ -39,6 +56,14 @@ export const myapi = {
 					.GET()
 					.json();
 				return validationService.validateApi.communities.get.one(data);
+			},
+			user: async (uid: string, { reverse } = { reverse: false }) => {
+				const data = await myfetch(
+					`${Config.API_URL}/users/${uid}/communities?reverse=${reverse}`,
+				)
+					.GET()
+					.json();
+				return validationService.validateApi.communities.get.many(data);
 			},
 		},
 		create: async (uid: string | number, data: unknown) => {

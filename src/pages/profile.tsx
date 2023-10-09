@@ -30,7 +30,7 @@ const Profile = (
 	};
 
 	return (
-		<div className="flex h-full items-center justify-center">
+		<div className="flex min-h-screen items-center justify-center">
 			<div className="flex flex-col gap-2">
 				<div className="flex items-center">
 					<Button isIconOnly radius="full" size="lg">

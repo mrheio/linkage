@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			</Head>
 			<Providers>
 				<Nav />
-				<main className="mx-auto h-full min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
+				<main className="mx-auto min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
 					<Component {...pageProps} />
 				</main>
 			</Providers>
