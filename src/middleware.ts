@@ -73,7 +73,7 @@ const sessionMiddleware = async (
 	const isSessionExpired = jwtService.isJwtExpired(accessToken);
 
 	if (isSessionExpired) {
-		const refresh = await fetch(`${Config.API_URL}/auth/refresh`, {
+		const refresh = await fetch(`${Config.API_URL()}/auth/refresh`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ refresh_token: refreshToken }),

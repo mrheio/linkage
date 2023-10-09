@@ -7,10 +7,13 @@ import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
 import { validationService } from './validation.service';
 
-const accessTokenOptions = { expirationTime: '1m', secret: Config.JWT_SECRET };
+const accessTokenOptions = {
+	expirationTime: '1m',
+	secret: Config.JWT_SECRET(),
+};
 const refreshTokenOptions = {
 	expirationTime: '30d',
-	secret: Config.JWT_SECRET,
+	secret: Config.JWT_SECRET(),
 };
 
 const generateTokens = async (user: any) => {
@@ -94,7 +97,7 @@ const refreshSession = async (data: unknown) => {
 };
 
 const getSession = async (accessToken: string) => {
-	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET);
+	const jwt = await jwtService.verifyJwt(accessToken, Config.JWT_SECRET());
 	const sessionData = validationService.validateSessionData(jwt.payload);
 	return sessionData;
 };

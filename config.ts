@@ -9,10 +9,26 @@ const getEnvVar = (key: string) => {
 };
 
 export const Config = {
-	API_URL: getEnvVar(
-		process.env.NODE_ENV === 'test' ? 'VITE_API_URL' : 'API_URL',
-	),
-	JWT_SECRET: getEnvVar(
-		process.env.NODE_ENV === 'test' ? 'VITE_JWT_SECRET' : 'JWT_SECRET',
-	),
+	API_URL: () => {
+		if (typeof window !== 'undefined') {
+			return '/api';
+		}
+
+		if (process.env.NODE_ENV === 'test') {
+			return getEnvVar('VITE_API_URL');
+		}
+
+		return getEnvVar('API_URL');
+	},
+	JWT_SECRET: () => {
+		if (typeof window !== 'undefined') {
+			return '';
+		}
+
+		if (process.env.NODE_ENV === 'test') {
+			return getEnvVar('VITE_JWT_SECRET');
+		}
+
+		return getEnvVar('JWT_SECRET');
+	},
 };

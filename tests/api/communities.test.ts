@@ -4,7 +4,7 @@ import { getSlug } from '~/utils';
 import { Config } from '../../config';
 
 test('calling GET /communities should return communities inside payload.items', async () => {
-	const data = await myfetch(`${Config.API_URL}/communities`).json();
+	const data = await myfetch(`${Config.API_URL()}/communities`).json();
 	const item = data.payload.items[0];
 
 	expect(data).toHaveProperty('payload.items');
@@ -29,7 +29,7 @@ test('calling GET /communities should return communities inside payload.items', 
 
 test('calling GET /communities with ?includeMembers=true should return communities inside payload.items and each community should have a members property', async () => {
 	const data = await myfetch(
-		`${Config.API_URL}/communities?includeMembers=true`,
+		`${Config.API_URL()}/communities?includeMembers=true`,
 	).json();
 
 	expect(data).toHaveProperty('payload.items');
