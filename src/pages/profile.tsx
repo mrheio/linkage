@@ -1,5 +1,6 @@
 import { Button } from '@nextui-org/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useDeleteAccount } from '~/hooks';
 import { authService, usersService } from '~/services';
 import { SafeUser } from '~/types';
 import { CookieKey } from '~/utils';
@@ -21,6 +22,12 @@ const Profile = (
 	props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
 	const { profile } = props;
+	const { mutate: deleteAccount, isLoading: isDeleteAccountRunning } =
+		useDeleteAccount();
+
+	const handleDeleteAccount = () => {
+		deleteAccount();
+	};
 
 	return (
 		<div className="flex h-full items-center justify-center">
@@ -41,7 +48,13 @@ const Profile = (
 							{JSON.stringify(!!profile.deleted_at)}
 						</span>
 					</p>
-					<Button color="danger" variant="ghost" className="mt-4">
+					<Button
+						onClick={handleDeleteAccount}
+						isLoading={isDeleteAccountRunning}
+						color="danger"
+						variant="ghost"
+						className="mt-4"
+					>
 						Delete Account
 					</Button>
 				</div>

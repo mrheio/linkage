@@ -28,3 +28,19 @@ export const stringifyDates = (data: any) => {
 
 	return { ...data, ...dates };
 };
+
+export const datefyData = (data: any) => {
+	let dates = {};
+
+	if (data.created_at) {
+		dates = { ...dates, created_at: new Date(data.created_at) };
+	}
+	if (data.updated_at) {
+		dates = { ...dates, updated_at: new Date(data.updated_at) };
+	}
+	if (data.deleted_at) {
+		dates = { ...dates, deleted_at: new Date(data.deleted_at) };
+	}
+
+	return { ...data, ...dates };
+};

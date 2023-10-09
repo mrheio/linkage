@@ -29,7 +29,11 @@ const deleteUser = async (
 	const { uid } = ctx.params;
 
 	try {
-		await usersService.deleteUser(uid);
+		const now = new Date().toISOString();
+		// update the <deleted_at> column (DO NOT DELETE IT FROM DATABASE)
+		await usersService.updateUser(uid, {
+			deleted_at: now,
+		});
 		return ApiSuccess.deleted().toNoContentResponse();
 	} catch (e) {
 		return ApiError.returnOrThrow(e).toNextResponse();

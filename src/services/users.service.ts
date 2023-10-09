@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
 import {
+	datefyData,
 	removeSensitiveUserData,
 	removeSensitiveUserDataFromList,
 	stringifyDates,
@@ -30,7 +31,7 @@ const updateUser = async (uid: string, data: unknown) => {
 
 	const res = await db
 		.update(users)
-		.set(stringifyDates(userData))
+		.set(datefyData(userData))
 		.where(eq(users.id, userId))
 		.returning();
 

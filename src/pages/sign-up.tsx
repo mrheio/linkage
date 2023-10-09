@@ -79,7 +79,7 @@ const SignUp = () => {
 					fullWidth
 					href={ROUTES.SIGN_IN}
 				>
-					Already have an account? Enter your account here
+					Already have an account? Sign In
 				</Button>
 			</form>
 		</div>
