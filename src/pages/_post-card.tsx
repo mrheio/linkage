@@ -18,20 +18,20 @@ const PostCard = ({ post }: { post: Post }) => {
 						size="sm"
 						startContent={<IconArrowBigUp />}
 					>
-						{post.upvotes}
+						{post?.upvotes}
 					</Button>
 					<Button
 						variant="light"
 						size="sm"
 						startContent={<IconArrowBigDownFilled />}
 					>
-						{post.downvotes}
+						{post?.downvotes}
 					</Button>
 				</div>
 				<div className="flex flex-col gap-6">
 					<div>
-						<h3 className="text-xl font-semibold">{post.title}</h3>
-						<p className="mt-4 line-clamp-3">{post.content}</p>
+						<h3 className="text-xl font-semibold">{post?.title}</h3>
+						<p className="mt-4 line-clamp-3">{post?.content}</p>
 					</div>
 					<ButtonGroup size="sm" className="justify-end">
 						<Button isIconOnly radius="full" variant="light">
