@@ -69,4 +69,8 @@ export default class ApiError extends ApiResponse {
 			}),
 		};
 	}
+
+	static communityNameTaken() {
+		return new ApiError('This community name is taken');
+	}
 }

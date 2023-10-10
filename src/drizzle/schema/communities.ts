@@ -13,9 +13,9 @@ import { usersToCommunities } from './users-to-communities';
 
 export const communities = pgTable('communities', {
 	id: serial('id').primaryKey(),
-	name: varchar('name', { length: 256 }).notNull(),
+	name: varchar('name', { length: 256 }).unique().notNull(),
 	description: text('description'),
-	slug: varchar('slug', { length: 256 }).notNull(),
+	slug: varchar('slug', { length: 256 }).unique().notNull(),
 	created_at: timestamp('created_at').notNull().defaultNow(),
 	updated_at: timestamp('updated_at').notNull().defaultNow(),
 	deleted_at: timestamp('deleted_at'),

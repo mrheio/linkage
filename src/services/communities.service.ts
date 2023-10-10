@@ -83,20 +83,29 @@ const createCommunity = async (data: unknown) => {
 		throw ApiError.notFound().generic;
 	}
 
-	const res = await db
-		.insert(communities)
-		.values({
-			...communityData,
-			slug: getSlug(communityData.name),
-			created_by_id: communityData.owner_id,
-		})
-		.returning();
+	try {
+		const res = await db
+			.insert(communities)
+			.values({
+				...communityData,
+				slug: getSlug(communityData.name),
+				created_by_id: communityData.owner_id,
+			})
+			.returning();
 
-	await db
-		.insert(usersToCommunities)
-		.values({ user_id: communityData.owner_id, community_id: res[0].id });
+		await db.insert(usersToCommunities).values({
+			user_id: communityData.owner_id,
+			community_id: res[0].id,
+		});
 
-	return res[0];
+		return res[0];
+	} catch (e) {
+		if ((e as any)?.constraint === 'communities_name_unique') {
+			throw ApiError.communityNameTaken();
+		}
+
+		throw e;
+	}
 };
 
 const updateCommunity = async (cid: string | number, data: unknown) => {
