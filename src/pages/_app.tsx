@@ -1,11 +1,8 @@
-import { QueryClient } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Nav from './_navbar';
 import Providers from './_providers';
 import './globals.css';
-
-const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
