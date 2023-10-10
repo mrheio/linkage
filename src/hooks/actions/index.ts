@@ -1,4 +1,5 @@
 export { default as useAddUserToCommunity } from './useAddUserToCommuntity';
+export { default as useCreateCommunity } from './useCreateCommunity';
 export { default as useDeleteAccount } from './useDeleteAccount';
 export { default as useRemoveUserFromCommunity } from './useRemoveUserFromCommunity';
 export { default as useSignIn } from './useSignIn';

@@ -27,7 +27,7 @@ const Overlays = () => {
 				</Button>
 			</Drawer>
 
-			<AddCommunityModal />
+			{communityModal.isOpen && <AddCommunityModal />}
 		</>
 	);
 };
