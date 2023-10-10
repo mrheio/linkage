@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Nav from './_navbar';
+import Overlays from './_overlays';
 import Providers from './_providers';
 import './globals.css';
 
@@ -15,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
 				<main className="mx-auto min-h-screen max-w-5xl p-6 xl:p-0 xl:py-6">
 					<Component {...pageProps} />
 				</main>
+				<Overlays />
 			</Providers>
 		</>
 	);

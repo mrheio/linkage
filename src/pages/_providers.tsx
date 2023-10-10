@@ -1,7 +1,7 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
-import { ThemeProvider } from '~/providers';
+import { OverlaysProvider, ThemeProvider } from '~/providers';
 
 const queryClient = new QueryClient();
 
@@ -9,9 +9,11 @@ const Providers = ({ children }: { children: ReactNode }) => {
 	return (
 		<NextUIProvider>
 			<ThemeProvider>
-				<QueryClientProvider client={queryClient}>
-					{children}
-				</QueryClientProvider>
+				<OverlaysProvider>
+					<QueryClientProvider client={queryClient}>
+						{children}
+					</QueryClientProvider>
+				</OverlaysProvider>
 			</ThemeProvider>
 		</NextUIProvider>
 	);
