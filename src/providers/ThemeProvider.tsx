@@ -6,9 +6,7 @@ import {
 	useState,
 } from 'react';
 
-const DEFAULT_THEME = 'light';
-
-const ThemeContext = createContext<[string, () => void] | null>(null);
+const ThemeContext = createContext<[string | null, () => void] | null>(null);
 
 export const useTheme = () => {
 	const x = useContext(ThemeContext);
@@ -23,7 +21,7 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-	const [theme, setTheme] = useState(DEFAULT_THEME);
+	const [theme, setTheme] = useState<string | null>(null);
 
 	const toggleTheme = () => {
 		setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
@@ -31,17 +29,17 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	useEffect(() => {
-		const storedTheme = localStorage.getItem('theme');
-
-		if (storedTheme) {
-			setTheme(storedTheme);
-		}
+		const root = window.document.documentElement;
+		const documentTheme = root.className;
+		setTheme(documentTheme);
 	}, []);
 
 	useEffect(() => {
 		const root = window.document.documentElement;
-		root.classList.remove(theme === 'dark' ? 'light' : 'dark');
-		root.classList.add(theme);
+		const documentTheme = root.className;
+		if (theme && theme !== documentTheme) {
+			root.className = theme;
+		}
 	}, [theme]);
 
 	return (
