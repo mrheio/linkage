@@ -1,2 +1,2 @@
-export * from './SideMenuProvider';
+export * from './OverlaysProvider';
 export * from './ThemeProvider';

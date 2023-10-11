@@ -68,6 +68,13 @@ const Nav = () => {
 						</Button>
 					</NavbarItem>
 				)}
+				{!isSessionLoading && session && session.role === 'admin' && (
+					<NavbarItem className="hidden xl:block">
+						<Button as={Link} href={ROUTES.ADMIN}>
+							Admin
+						</Button>
+					</NavbarItem>
+				)}
 				{!isSessionLoading && session && (
 					<NavbarItem className="xl:hidden">
 						<Button
