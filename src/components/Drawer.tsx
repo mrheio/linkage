@@ -7,18 +7,19 @@ import {
 import { ReactNode } from 'react';
 
 type DrawerProps = Partial<ReturnType<typeof useDisclosure>> & {
+	position?: 'left' | 'right';
 	children: ReactNode;
 };
 
 const Drawer = (props: DrawerProps) => {
-	const { children, isOpen, onOpen, onOpenChange } = props;
+	const { children, isOpen, onOpenChange, position = 'right' } = props;
 
 	return (
 		<Modal
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
 			size="full"
-			className="fixed right-0 w-[60%] max-w-md"
+			className={`fixed ${position}-0 w-[60%] max-w-md`}
 			motionProps={{
 				variants: {
 					enter: {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { userSchema } from './user.schema';
 
 export const communitySchema = z.object({
-	id: z.number().positive(),
+	id: z.number().min(0),
 	name: z.string(),
 	description: z.string(),
 	slug: z.string(),

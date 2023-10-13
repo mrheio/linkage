@@ -1,8 +1,10 @@
-import { Tab, Tabs } from '@nextui-org/react';
+import { Button, Tab, Tabs } from '@nextui-org/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { CommunitiesTab } from '~/components';
+import { useCommunities } from '~/hooks';
+import { useOverlays } from '~/providers';
 import { communitiesService } from '~/services';
 import { Community } from '~/types';
-import CommunitiesTable from './_communities-table';
 
 type AdminDashboardProps = {
 	communities: Community[];
@@ -19,16 +21,25 @@ export const getServerSideProps: GetServerSideProps<
 const AdminDashboard = (
 	props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
-	const { communities } = props;
+	const { data: communities } = useCommunities(props.communities);
+	const { communityModal } = useOverlays();
 
 	return (
-		<div>
-			<Tabs>
-				<Tab key="communities" title="Communities">
-					<CommunitiesTable communities={communities} />
-				</Tab>
-			</Tabs>
-		</div>
+		<>
+			<div className="fixed left-0 top-0 z-40 h-screen w-[24%] max-w-xs p-12 shadow-none">
+				<Button fullWidth onClick={communityModal.open}>
+					Create Community
+				</Button>
+			</div>
+
+			<div>
+				<Tabs>
+					<Tab key="communities" title="Communities">
+						<CommunitiesTab communities={communities} />
+					</Tab>
+				</Tabs>
+			</div>
+		</>
 	);
 };
 

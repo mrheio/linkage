@@ -22,7 +22,9 @@ const CommunityDetailsModal = () => {
 						<ModalHeader>
 							<h3 className="text-xl">{community?.name}</h3>
 						</ModalHeader>
-						<ModalBody>{community?.description}</ModalBody>
+						<ModalBody>
+							{community?.description ?? 'No description :(('}
+						</ModalBody>
 						<ModalFooter className="flex flex-col">
 							<p>Slug: /{community?.slug}</p>
 							<p>Created At: {community?.created_at}</p>
