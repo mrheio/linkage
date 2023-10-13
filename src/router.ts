@@ -12,3 +12,4 @@ const PROTECTED_ROUTES = [ROUTES.PROFILE, ROUTES.ADMIN];
 export const isProtectedRoute = (route: string) =>
 	PROTECTED_ROUTES.includes(route);
 export const isAuthRoute = (route: string) => AUTH_ROUTES.includes(route);
+export const isAdminRoute = (route: string) => route.includes('/admin');

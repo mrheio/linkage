@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from '../config';
-import { ROUTES, isAuthRoute, isProtectedRoute } from './router';
+import { ROUTES, isAdminRoute, isAuthRoute, isProtectedRoute } from './router';
+import { authService, usersService } from './services';
 import { jwtService } from './services/jwt.service';
 import { CookieKey } from './utils';
 
@@ -118,6 +119,35 @@ const authMiddleware = (request: NextRequest, response: NextResponse) => {
 	return;
 };
 
+const adminMiddleware = async (
+	request: NextRequest,
+	response: NextResponse,
+) => {
+	const isApi = request.nextUrl.pathname.includes('api');
+
+	if (isApi) {
+		return;
+	}
+
+	const route = request.nextUrl.pathname;
+	const accessToken = request.cookies.get(CookieKey.AccessToken)?.value;
+
+	if (!accessToken && isProtectedRoute(route)) {
+		return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
+	}
+
+	if (accessToken && isAdminRoute(route)) {
+		const session = await authService.getSession(accessToken);
+		const user = await usersService.getUser(session.id);
+
+		if (user.role !== 'admin') {
+			return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
+		}
+	}
+
+	return;
+};
+
 export const middleware = async (request: NextRequest) => {
 	const response = NextResponse.next();
 
@@ -125,6 +155,7 @@ export const middleware = async (request: NextRequest) => {
 		logMiddleware,
 		sessionMiddleware,
 		authMiddleware,
+		adminMiddleware,
 	]);
 
 	nextResponse.headers.set('x-middleware-cache', 'no-cache');
