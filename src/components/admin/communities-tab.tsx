@@ -14,7 +14,9 @@ const rowsPerPage = 12;
 const CommunitiesTab = (props: CommunitiesTabProps) => {
 	const { communities } = props;
 	const [searchValue, setSearchValue] = useState('');
-	const [visibleColumns, setVisibleColumns] = useState([]);
+	const [visibleColumns, setVisibleColumns] = useState<
+		{ key: string; label: string }[]
+	>([]);
 	const [page, setPage] = useState(1);
 	const [pages, setPages] = useState(
 		Math.ceil(communities.length / rowsPerPage),
@@ -42,12 +44,10 @@ const CommunitiesTab = (props: CommunitiesTabProps) => {
 	};
 
 	const filteredCommunities = useMemo(() => {
-		console.log(searchValue);
-
 		return communities.filter((c) =>
 			c.name.toLowerCase().includes(searchValue.toLowerCase()),
 		);
-	}, [searchValue]);
+	}, [communities, searchValue]);
 
 	useEffect(() => {
 		const pagesCount = Math.ceil(filteredCommunities.length / rowsPerPage);
