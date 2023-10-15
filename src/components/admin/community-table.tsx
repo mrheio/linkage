@@ -8,7 +8,7 @@ import {
 	TableRow,
 } from '@nextui-org/react';
 import { Community } from '~/types';
-import CommunitiesTableCellContent from './communities-tab-cell-content';
+import CommunitiesTableCellContent from './communities-table-cell-content';
 import { actionsColumn, mandatoryColumns } from './utils';
 
 type CommunitiesTableProps = {
