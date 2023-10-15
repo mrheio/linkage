@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { comments, db } from '~/drizzle';
 import { validationService } from './validation.service';
 
-const getComments = async (pid: string | number) => {
+const getComments = async (pid: unknown) => {
 	const postId = validationService.validatePositiveNumber(pid);
 
 	const res = await db
@@ -21,7 +21,7 @@ const createComment = async (data: unknown) => {
 	return res[0];
 };
 
-const updateComment = async (commId: string | number, data: unknown) => {
+const updateComment = async (commId: unknown, data: unknown) => {
 	const commentId = validationService.validatePositiveNumber(commId);
 	const updateData = validationService.validateUpdateCommentData(data);
 
@@ -34,7 +34,7 @@ const updateComment = async (commId: string | number, data: unknown) => {
 	return res[0];
 };
 
-const deleteComment = async (commId: string | number) => {
+const deleteComment = async (commId: unknown) => {
 	const commentId = validationService.validatePositiveNumber(commId);
 
 	await db.delete(comments).where(eq(comments.id, commentId));

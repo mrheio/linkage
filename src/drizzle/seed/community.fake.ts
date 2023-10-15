@@ -23,7 +23,7 @@ const fakeCommunity = (members: User[], id: number) => {
 	};
 };
 
-export const generateFakeCommunities = (members: User[], count = 10) => {
+export const generateFakeCommunities = (members: User[], count = 32) => {
 	const communities = [...Array(count)].map((x, i) =>
 		fakeCommunity(members, i),
 	);

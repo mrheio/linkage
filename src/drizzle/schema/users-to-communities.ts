@@ -8,10 +8,11 @@ export const usersToCommunities = pgTable(
 	{
 		user_id: uuid('user_id')
 			.notNull()
-			.references(() => users.id),
+			.references(() => users.id, { onDelete: 'cascade' }),
+
 		community_id: integer('community_id')
 			.notNull()
-			.references(() => communities.id),
+			.references(() => communities.id, { onDelete: 'cascade' }),
 	},
 	(t) => ({ pk: primaryKey(t.user_id, t.community_id) }),
 );

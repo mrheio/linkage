@@ -7,9 +7,24 @@ export const postSchema = z.object({
 	slug: z.string(),
 	upvotes: z.number().positive(),
 	downvotes: z.number().positive(),
-	created_at: z.string().datetime(),
-	updated_at: z.string().datetime(),
-	deleted_at: z.string().datetime().nullable(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
+	deleted_at: z.coerce.date().nullable(),
 	created_by_id: z.string().uuid(),
 	community_id: z.number().positive(),
+});
+
+export const addPostSchema = z.object({
+	title: z.string().trim().min(3),
+	content: z.string().trim().min(1),
+	created_by_id: z.string().uuid(),
+	community_id: z.number().positive(),
+});
+
+export const updatePostSchema = z.object({
+	title: z.string().trim().min(3).optional(),
+	content: z.string().trim().min(1).optional(),
+	slug: z.string().trim().min(3).optional(),
+	upvotes: z.number().positive().optional(),
+	downvotes: z.number().positive().optional(),
 });

@@ -1,5 +1,5 @@
 import { compareSync, genSaltSync, hashSync } from 'bcrypt-ts';
-import { SignUpData } from '~/schemas';
+import { SignUpData } from '~/types';
 
 const hashPassword = (password: string) => {
 	const salt = genSaltSync(10);

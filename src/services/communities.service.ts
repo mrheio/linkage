@@ -13,23 +13,25 @@ const getCommunities = async (
 		},
 	});
 
-	return includeMembers
-		? res.map((x) => {
-				const { members, ...rest } = x;
-				const aux = [];
+	if (includeMembers) {
+		return res.map((x) => {
+			const { members, ...rest } = x;
+			const aux = [];
 
-				for (const m of members) {
-					const { user } = m as any;
-					aux.push(removeSensitiveUserData(user));
-				}
+			for (const m of members) {
+				const user = removeSensitiveUserData((m as any).user);
+				aux.push(user);
+			}
 
-				return { ...rest, members: aux };
-		  })
-		: res;
+			return { ...rest, members: aux };
+		});
+	}
+
+	return res;
 };
 
 const getCommunity = async (
-	cid: string | number,
+	cid: unknown,
 	{ includeMembers } = { includeMembers: false },
 ) => {
 	const communityId = validationService.validatePositiveNumber(cid);
@@ -47,7 +49,7 @@ const getCommunity = async (
 };
 
 const getUserCommunities = async (
-	uid: string,
+	uid: unknown,
 	{ reverse } = { reverse: false },
 ) => {
 	const userId = validationService.validateUuid(uid);
@@ -108,7 +110,7 @@ const createCommunity = async (data: unknown) => {
 	}
 };
 
-const updateCommunity = async (cid: string | number, data: unknown) => {
+const updateCommunity = async (cid: unknown, data: unknown) => {
 	const communityId = validationService.validatePositiveNumber(cid);
 	let communityData = validationService.validateUpdateCommunityData(data);
 
@@ -129,10 +131,22 @@ const updateCommunity = async (cid: string | number, data: unknown) => {
 	return res[0];
 };
 
+const deleteCommunity = async (cid: unknown) => {
+	const communityId = validationService.validatePositiveNumber(cid);
+
+	await db
+		.delete(usersToCommunities)
+		.where(eq(usersToCommunities.community_id, communityId));
+	await db.delete(communities).where(eq(communities.id, communityId));
+
+	return;
+};
+
 export const communitiesService = {
 	getCommunities,
 	getCommunity,
 	getUserCommunities,
 	createCommunity,
 	updateCommunity,
+	deleteCommunity,
 };

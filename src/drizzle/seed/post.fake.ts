@@ -35,7 +35,7 @@ const fakePost = (
 export const generateFakePosts = (
 	users: User[],
 	communities: Community[],
-	count = 10,
+	count = 42,
 ) => {
 	const posts = [...Array(count)].map((x, i) =>
 		fakePost(users, communities, i),

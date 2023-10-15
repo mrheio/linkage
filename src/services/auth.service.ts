@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import { Session } from '~/types';
+import { GenerateTokensData, Session } from '~/types';
 import { Config } from '../../config';
 import { jwtService } from './jwt.service';
 import { securityService } from './security.service';
@@ -11,18 +11,19 @@ const accessTokenOptions = {
 	expirationTime: '1m',
 	secret: Config.JWT_SECRET(),
 };
+
 const refreshTokenOptions = {
 	expirationTime: '30d',
 	secret: Config.JWT_SECRET(),
 };
 
-const generateTokens = async (user: any) => {
+const generateTokens = async (data: GenerateTokensData) => {
 	const accessToken = await jwtService.signJwt(
-		{ id: user.id, username: user.username, role: user.role },
+		{ id: data.id, username: data.username, role: data.role },
 		accessTokenOptions,
 	);
 	const refreshToken = await jwtService.signJwt(
-		{ id: user.id },
+		{ id: data.id },
 		refreshTokenOptions,
 	);
 	return { accessToken, refreshToken };
@@ -69,7 +70,7 @@ const signIn = async (data: unknown) => {
 
 	const doPasswordsMatch = securityService.comparePasswords(
 		signInData.password,
-		user.password ?? '',
+		user.password,
 	);
 
 	if (!doPasswordsMatch) {

@@ -5,27 +5,28 @@ import {
 	datefyData,
 	removeSensitiveUserData,
 	removeSensitiveUserDataFromList,
-	stringifyDates,
 } from '~/utils';
 import { validationService } from './validation.service';
 
 const getUsers = async () => {
 	const res = await db.select().from(users);
-	return removeSensitiveUserDataFromList(res.map((x) => stringifyDates(x)));
+	return removeSensitiveUserDataFromList(res);
 };
 
-const getUser = async (uid: string) => {
-	const res = await db.select().from(users).where(eq(users.id, uid));
+const getUser = async (uid: unknown) => {
+	const userId = validationService.validateUuid(uid);
+
+	const res = await db.select().from(users).where(eq(users.id, userId));
 
 	if (!res.length) {
 		throw ApiError.notFound().generic;
 	}
 
 	const user = res[0];
-	return removeSensitiveUserData(stringifyDates(user));
+	return removeSensitiveUserData(user);
 };
 
-const updateUser = async (uid: string, data: unknown) => {
+const updateUser = async (uid: unknown, data: unknown) => {
 	const userId = validationService.validateUuid(uid);
 	const userData = validationService.validateUpdateUserData(data);
 
@@ -38,7 +39,7 @@ const updateUser = async (uid: string, data: unknown) => {
 	return res[0];
 };
 
-const deleteUser = async (uid: string) => {
+const deleteUser = async (uid: unknown) => {
 	const userId = validationService.validateUuid(uid);
 
 	const result = await db.delete(users).where(eq(users.id, userId));

@@ -3,7 +3,7 @@ import { ApiError } from '~/api/responses';
 import { db, usersToCommunities } from '~/drizzle';
 import { validationService } from './validation.service';
 
-const addUserToCommunity = async (uid: string, cid: string | number) => {
+const addUserToCommunity = async (uid: unknown, cid: unknown) => {
 	const userId = validationService.validateUuid(uid);
 	const communityId = validationService.validatePositiveNumber(cid);
 

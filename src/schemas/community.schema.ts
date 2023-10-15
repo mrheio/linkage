@@ -6,13 +6,26 @@ export const communitySchema = z.object({
 	name: z.string(),
 	description: z.string(),
 	slug: z.string(),
-	created_at: z.string().datetime(),
-	updated_at: z.string().datetime(),
-	deleted_at: z.string().datetime().nullable(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
+	deleted_at: z.coerce.date().nullable(),
 	owner_id: z.string().uuid(),
 	created_by_id: z.string().uuid(),
 });
 
 export const communityWithMembersSchema = communitySchema.extend({
 	members: z.array(userSchema),
+});
+
+export const addCommunitySchema = z.object({
+	name: z.string().trim().min(3),
+	description: z.string().optional(),
+	owner_id: z.string().uuid(),
+});
+
+export const updateCommunitySchema = z.object({
+	name: z.string().trim().min(3).optional(),
+	description: z.string().optional(),
+	slug: z.string().trim().min(3).optional(),
+	owner_id: z.string().uuid().optional(),
 });

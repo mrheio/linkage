@@ -9,7 +9,7 @@ const getPosts = async () => {
 	return res;
 };
 
-const getPost = async (pid: string | number) => {
+const getPost = async (pid: unknown) => {
 	const postId = validationService.validatePositiveNumber(pid);
 
 	const res = await db.select().from(posts).where(eq(posts.id, postId));
@@ -32,7 +32,7 @@ const createPost = async (data: unknown) => {
 	return res[0];
 };
 
-const updatePost = async (pid: string | number, data: unknown) => {
+const updatePost = async (pid: unknown, data: unknown) => {
 	const postId = validationService.validatePositiveNumber(pid);
 	let postData = validationService.validateUpdatePostData(data);
 
@@ -53,7 +53,7 @@ const updatePost = async (pid: string | number, data: unknown) => {
 	return res[0];
 };
 
-const deletePost = async (pid: string | number) => {
+const deletePost = async (pid: unknown) => {
 	const postId = validationService.validatePositiveNumber(pid);
 
 	await db.delete(posts).where(eq(posts.id, postId));

@@ -27,7 +27,7 @@ const fakeComment = (users: User[], posts: Post[], id: number): Comment => {
 export const generateFakeComments = (
 	users: User[],
 	posts: Post[],
-	count = 16,
+	count = 64,
 ) => {
 	const comments = [...Array(count)].map((x, i) =>
 		fakeComment(users, posts, i),

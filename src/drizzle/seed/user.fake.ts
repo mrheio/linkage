@@ -24,7 +24,7 @@ const fakeUser = () => {
 	};
 };
 
-export const generateFakeUsers = (count = 12) => {
+export const generateFakeUsers = (count = 20) => {
 	const users = [...Array(count)].map((x) => fakeUser());
 	return users;
 };

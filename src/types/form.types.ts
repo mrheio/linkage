@@ -4,6 +4,7 @@ import {
 	addPostSchema,
 	createCommentSchema,
 	deleteUserSchema,
+	generateTokensSchema,
 	refreshSessionSchema,
 	signInSchema,
 	signUpSchema,
@@ -12,6 +13,7 @@ import {
 	updateUserSchema,
 } from '~/schemas';
 
+export type GenerateTokensData = z.infer<typeof generateTokensSchema>;
 export type SignUpData = z.infer<typeof signUpSchema>;
 export type SignInData = z.infer<typeof signInSchema>;
 export type RefreshSessionData = z.infer<typeof refreshSessionSchema>;
