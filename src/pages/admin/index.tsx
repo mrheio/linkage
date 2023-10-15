@@ -1,7 +1,6 @@
 import { Button, Tab, Tabs } from '@nextui-org/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { CommunitiesTab } from '~/components';
-import { useCommunities } from '~/hooks';
 import { useOverlays } from '~/providers';
 import { communitiesService } from '~/services';
 import { Community } from '~/types';
@@ -13,15 +12,15 @@ type AdminDashboardProps = {
 export const getServerSideProps: GetServerSideProps<
 	AdminDashboardProps
 > = async (ctx) => {
-	const communities = await communitiesService.getCommunities();
+	const res = await communitiesService.getCommunities();
+	const communities = JSON.parse(JSON.stringify(res));
 
-	return { props: { communities: JSON.parse(JSON.stringify(communities)) } };
+	return { props: { communities } };
 };
 
 const AdminDashboard = (
 	props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
-	const { data: communities } = useCommunities(props.communities);
 	const { communityModal } = useOverlays();
 
 	return (
@@ -35,7 +34,7 @@ const AdminDashboard = (
 			<div>
 				<Tabs>
 					<Tab key="communities" title="Communities">
-						<CommunitiesTab communities={communities} />
+						<CommunitiesTab initialData={props.communities} />
 					</Tab>
 				</Tabs>
 			</div>

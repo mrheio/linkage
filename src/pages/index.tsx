@@ -14,19 +14,20 @@ type HomeProps = {
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (
 	ctx,
 ) => {
-	const posts = await postsService.getPosts();
+	const res = await postsService.getPosts();
+	const posts = JSON.parse(JSON.stringify(res));
 
 	const token = ctx.req.cookies[CookieKey.AccessToken];
 
 	if (!token) {
 		return {
-			props: { posts: JSON.parse(JSON.stringify(posts)), session: null },
+			props: { posts, session: null },
 		};
 	}
 
 	const session = await authService.getSession(token);
 
-	return { props: { posts: JSON.parse(JSON.stringify(posts)), session } };
+	return { props: { posts, session } };
 };
 
 const Home = (

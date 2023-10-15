@@ -1,18 +1,19 @@
 import { Selection } from '@nextui-org/react';
 import { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
+import { useCommunities } from '~/hooks';
 import { Community } from '~/types';
 import CommunitiesTableFilters from './communities-table-filters';
 import CommunitiesTable from './community-table';
 import { optionalColumns } from './utils';
 
 type CommunitiesTabProps = {
-	communities: Community[];
+	initialData: Community[];
 };
 
 const rowsPerPage = 12;
 
 const CommunitiesTab = (props: CommunitiesTabProps) => {
-	const { communities } = props;
+	const { data: communities } = useCommunities(props.initialData);
 	const [searchValue, setSearchValue] = useState('');
 	const [visibleColumns, setVisibleColumns] = useState<
 		{ key: string; label: string }[]
@@ -60,6 +61,18 @@ const CommunitiesTab = (props: CommunitiesTabProps) => {
 
 		return filteredCommunities.slice(start, end);
 	}, [page, filteredCommunities]);
+
+	useEffect(() => {
+		console.log({ communities });
+	}, [communities]);
+
+	useEffect(() => {
+		console.log({ filteredCommunities });
+	}, [filteredCommunities]);
+
+	useEffect(() => {
+		console.log({ items });
+	}, [items]);
 
 	return (
 		<>

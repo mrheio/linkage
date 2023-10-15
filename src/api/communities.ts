@@ -82,8 +82,23 @@ const patchCommunity = async (
 	}
 };
 
+const deleteCommunity = async (
+	request: NextRequest,
+	context: { params: { cid: string } },
+) => {
+	const { cid } = context.params;
+
+	try {
+		await communitiesService.deleteCommunity(cid);
+		return ApiSuccess.deleted().toNoContentResponse();
+	} catch (e) {
+		return ApiError.returnOrThrow(e).toNextResponse();
+	}
+};
+
 export const communitiesAPI = {
 	POST: postCommunity,
 	GET: { MANY: getCommunities, ONE: getCommunity, USER: getUserCommunities },
 	PATCH: patchCommunity,
+	DELETE: deleteCommunity,
 };

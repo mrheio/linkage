@@ -1,5 +1,6 @@
 import { Button, Tooltip } from '@nextui-org/react';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
+import { useDeleteCommunity } from '~/hooks';
 import { useOverlays } from '~/providers';
 import { Community } from '~/types';
 
@@ -11,13 +12,19 @@ type CommunityTableCellContentProps = {
 const CommunitiesTableCellContent = (props: CommunityTableCellContentProps) => {
 	const { community, columnKey } = props;
 	const { communityDetailsModal } = useOverlays();
+	const { mutate: deleteCommunity, isLoading: isDeleteCommunityRunning } =
+		useDeleteCommunity();
 
 	if (columnKey === 'actions') {
 		return (
 			<div className="relative flex items-center justify-end gap-2">
 				<Tooltip content="Details">
 					<Button
-						onClick={() => communityDetailsModal.open(community)}
+						onClick={() =>
+							communityDetailsModal.open(
+								JSON.parse(JSON.stringify(community)),
+							)
+						}
 						isIconOnly
 						variant="light"
 					>
@@ -30,7 +37,13 @@ const CommunitiesTableCellContent = (props: CommunityTableCellContentProps) => {
 					</Button>
 				</Tooltip>
 				<Tooltip color="danger" content="Delete">
-					<Button color="danger" isIconOnly variant="light">
+					<Button
+						onClick={() => deleteCommunity({ cid: community.id })}
+						isLoading={isDeleteCommunityRunning}
+						color="danger"
+						isIconOnly
+						variant="light"
+					>
 						<IconTrash />
 					</Button>
 				</Tooltip>
