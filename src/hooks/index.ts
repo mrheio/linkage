@@ -1,4 +1,4 @@
 export * from './actions';
-export { default as useCommunities } from './useCommunities';
+export * from './communities';
 export { default as useSession } from './useSession';
 export { default as useUserCommunities } from './useUserCommunities';
