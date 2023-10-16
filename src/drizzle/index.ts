@@ -6,3 +6,4 @@ export {
 	users,
 	usersToCommunities,
 } from './schema';
+export * from './types';

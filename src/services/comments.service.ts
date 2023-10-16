@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { comments, db } from '~/drizzle';
+import { parseModelDates } from '~/utils';
 import { validationService } from './validation.service';
 
 const getComments = async (pid: unknown) => {
@@ -10,15 +11,16 @@ const getComments = async (pid: unknown) => {
 		.from(comments)
 		.where(eq(comments.post_id, postId));
 
-	return res;
+	return res.map((x) => parseModelDates(x));
 };
 
 const createComment = async (data: unknown) => {
 	const commentData = validationService.validateCreateCommentData(data);
 
 	const res = await db.insert(comments).values(commentData).returning();
+	const comment = res[0];
 
-	return res[0];
+	return parseModelDates(comment);
 };
 
 const updateComment = async (commId: unknown, data: unknown) => {

@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, posts } from '~/drizzle';
-import { getSlug } from '~/utils';
+import { getSlug, parseModelDates } from '~/utils';
 import { validationService } from './validation.service';
 
 const getPosts = async () => {
 	const res = await db.select().from(posts);
-	return res;
+	return res.map((x) => parseModelDates(x));
 };
 
 const getPost = async (pid: unknown) => {
@@ -18,7 +18,8 @@ const getPost = async (pid: unknown) => {
 		throw ApiError.notFound().generic;
 	}
 
-	return res[0];
+	const post = res[0];
+	return parseModelDates(post);
 };
 
 const createPost = async (data: unknown) => {

@@ -6,9 +6,9 @@ export const communitySchema = z.object({
 	name: z.string(),
 	description: z.string().nullable(),
 	slug: z.string(),
-	created_at: z.coerce.date(),
-	updated_at: z.coerce.date(),
-	deleted_at: z.coerce.date().nullable(),
+	created_at: z.number().positive(),
+	updated_at: z.number().positive(),
+	deleted_at: z.number().positive().nullable(),
 	owner_id: z.string().uuid(),
 	created_by_id: z.string().uuid(),
 });

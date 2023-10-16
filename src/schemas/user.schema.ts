@@ -5,9 +5,9 @@ export const userSchema = z.object({
 	email: z.string().email(),
 	username: z.string(),
 	role: z.enum(['user', 'admin']),
-	created_at: z.coerce.date(),
-	updated_at: z.coerce.date(),
-	deleted_at: z.coerce.date().nullable(),
+	created_at: z.number().positive(),
+	updated_at: z.number().positive(),
+	deleted_at: z.number().positive().nullable(),
 });
 
 export const updateUserSchema = z.object({

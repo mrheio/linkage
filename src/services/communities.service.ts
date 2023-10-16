@@ -1,9 +1,35 @@
 import { eq, inArray, notInArray } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
-import { communities, db, users, usersToCommunities } from '~/drizzle';
+import {
+	DbCommunity,
+	DbUser,
+	communities,
+	db,
+	users,
+	usersToCommunities,
+} from '~/drizzle';
 import { CommunityWithMembers } from '~/types';
-import { getSlug } from '~/utils';
+import { getSlug, parseModelDates } from '~/utils';
 import { validationService } from './validation.service';
+
+const joinCommunitiesQueryResult = (
+	queryRes: { community: DbCommunity; user: DbUser }[],
+) => {
+	return queryRes.reduce<CommunityWithMembers[]>((acc, current) => {
+		const data = acc.find((x) => x.id === current.community.id);
+
+		if (data) {
+			const filtered = acc.filter((x) => x.id !== data.id);
+			const members = [...data.members, parseModelDates(current.user)];
+			return [...filtered, { ...data, members }];
+		}
+
+		const community = parseModelDates(current.community);
+		const members = [parseModelDates(current.user)];
+
+		return [...acc, { ...community, members }];
+	}, []);
+};
 
 const getCommunities = async (
 	{ includeMembers } = { includeMembers: false },
@@ -18,30 +44,11 @@ const getCommunities = async (
 			)
 			.innerJoin(users, eq(users.id, usersToCommunities.user_id));
 
-		const dataWithJoinedMembers = res.reduce<CommunityWithMembers[]>(
-			(acc, current) => {
-				const data = acc.find((x) => x.id === current.community.id);
-
-				if (data) {
-					return [
-						...acc.filter((x) => x.id !== data.id),
-						{ ...data, members: [...data.members, current.user] },
-					];
-				}
-
-				return [
-					...acc,
-					{ ...current.community, members: [current.user] },
-				];
-			},
-			[],
-		);
-
-		return dataWithJoinedMembers;
+		return joinCommunitiesQueryResult(res);
 	}
 
 	const res = await db.select().from(communities);
-	return res;
+	return res.map((x) => parseModelDates(x));
 };
 
 const getCommunity = async (
@@ -61,26 +68,7 @@ const getCommunity = async (
 			.innerJoin(users, eq(users.id, usersToCommunities.user_id))
 			.where(eq(communities.id, communityId));
 
-		const dataWithJoinedMembers = res.reduce<CommunityWithMembers[]>(
-			(acc, current) => {
-				const data = acc.find((x) => x.id === current.community.id);
-
-				if (data) {
-					return [
-						...acc.filter((x) => x.id !== data.id),
-						{ ...data, members: [...data.members, current.user] },
-					];
-				}
-
-				return [
-					...acc,
-					{ ...current.community, members: [current.user] },
-				];
-			},
-			[],
-		);
-
-		return dataWithJoinedMembers[0];
+		return joinCommunitiesQueryResult(res)[0];
 	}
 
 	const res = await db
@@ -92,7 +80,8 @@ const getCommunity = async (
 		throw ApiError.notFound().generic;
 	}
 
-	return res[0];
+	const community = res[0];
+	return parseModelDates(community);
 };
 
 const getUserCommunities = async (

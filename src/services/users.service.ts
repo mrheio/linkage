@@ -1,16 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { db, users } from '~/drizzle';
-import {
-	datefyData,
-	removeSensitiveUserData,
-	removeSensitiveUserDataFromList,
-} from '~/utils';
+import { datefyData, parseModelDates, removeSensitiveUserData } from '~/utils';
 import { validationService } from './validation.service';
 
 const getUsers = async () => {
 	const res = await db.select().from(users);
-	return removeSensitiveUserDataFromList(res);
+	return res.map((x) => removeSensitiveUserData(parseModelDates(x)));
 };
 
 const getUser = async (uid: unknown) => {
@@ -23,7 +19,7 @@ const getUser = async (uid: unknown) => {
 	}
 
 	const user = res[0];
-	return removeSensitiveUserData(user);
+	return removeSensitiveUserData(parseModelDates(user));
 };
 
 const updateUser = async (uid: unknown, data: unknown) => {

@@ -1,12 +1,8 @@
-import { User } from '~/types';
+import { User, WithTimestampsModel } from '~/types';
 
 export const removeSensitiveUserData = (user: User) => {
 	const { password, ...rest } = user;
 	return rest;
-};
-
-export const removeSensitiveUserDataFromList = (users: User[]) => {
-	return users.map((user) => removeSensitiveUserData(user));
 };
 
 export const getSlug = (name: string) => {
@@ -43,4 +39,13 @@ export const datefyData = (data: any) => {
 	}
 
 	return { ...data, ...dates };
+};
+
+export const parseModelDates = <T>(data: WithTimestampsModel<T>) => {
+	return {
+		...data,
+		created_at: data.created_at.valueOf(),
+		updated_at: data.updated_at.valueOf(),
+		deleted_at: data.deleted_at?.valueOf() ?? null,
+	};
 };

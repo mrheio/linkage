@@ -7,9 +7,9 @@ export const postSchema = z.object({
 	slug: z.string(),
 	upvotes: z.number().positive(),
 	downvotes: z.number().positive(),
-	created_at: z.coerce.date(),
-	updated_at: z.coerce.date(),
-	deleted_at: z.coerce.date().nullable(),
+	created_at: z.number().positive(),
+	updated_at: z.number().positive(),
+	deleted_at: z.number().positive().nullable(),
 	created_by_id: z.string().uuid(),
 	community_id: z.number().positive(),
 });
