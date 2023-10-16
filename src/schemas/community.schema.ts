@@ -4,7 +4,7 @@ import { userSchema } from './user.schema';
 export const communitySchema = z.object({
 	id: z.number().min(0),
 	name: z.string(),
-	description: z.string(),
+	description: z.string().nullable(),
 	slug: z.string(),
 	created_at: z.coerce.date(),
 	updated_at: z.coerce.date(),

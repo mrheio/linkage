@@ -1,32 +1,46 @@
 import { eq, inArray, notInArray } from 'drizzle-orm';
 import { ApiError } from '~/api/responses';
 import { communities, db, users, usersToCommunities } from '~/drizzle';
-import { getSlug, removeSensitiveUserData } from '~/utils';
+import { CommunityWithMembers } from '~/types';
+import { getSlug } from '~/utils';
 import { validationService } from './validation.service';
 
 const getCommunities = async (
 	{ includeMembers } = { includeMembers: false },
 ) => {
-	const res = await db.query.communities.findMany({
-		with: {
-			members: includeMembers ? { with: { user: true } } : undefined,
-		},
-	});
-
 	if (includeMembers) {
-		return res.map((x) => {
-			const { members, ...rest } = x;
-			const aux = [];
+		const res = await db
+			.select({ community: communities, user: users })
+			.from(communities)
+			.innerJoin(
+				usersToCommunities,
+				eq(usersToCommunities.community_id, communities.id),
+			)
+			.innerJoin(users, eq(users.id, usersToCommunities.user_id));
 
-			for (const m of members) {
-				const user = removeSensitiveUserData((m as any).user);
-				aux.push(user);
-			}
+		const dataWithJoinedMembers = res.reduce<CommunityWithMembers[]>(
+			(acc, current) => {
+				const data = acc.find((x) => x.id === current.community.id);
 
-			return { ...rest, members: aux };
-		});
+				if (data) {
+					return [
+						...acc.filter((x) => x.id !== data.id),
+						{ ...data, members: [...data.members, current.user] },
+					];
+				}
+
+				return [
+					...acc,
+					{ ...current.community, members: [current.user] },
+				];
+			},
+			[],
+		);
+
+		return dataWithJoinedMembers;
 	}
 
+	const res = await db.select().from(communities);
 	return res;
 };
 
@@ -36,16 +50,49 @@ const getCommunity = async (
 ) => {
 	const communityId = validationService.validatePositiveNumber(cid);
 
-	const res = await db.query.communities.findFirst({
-		with: { members: includeMembers ? true : undefined },
-		where: (communities, { eq }) => eq(communities.id, communityId),
-	});
+	if (includeMembers) {
+		const res = await db
+			.select({ community: communities, user: users })
+			.from(communities)
+			.innerJoin(
+				usersToCommunities,
+				eq(usersToCommunities.community_id, communities.id),
+			)
+			.innerJoin(users, eq(users.id, usersToCommunities.user_id))
+			.where(eq(communities.id, communityId));
 
-	if (!res) {
+		const dataWithJoinedMembers = res.reduce<CommunityWithMembers[]>(
+			(acc, current) => {
+				const data = acc.find((x) => x.id === current.community.id);
+
+				if (data) {
+					return [
+						...acc.filter((x) => x.id !== data.id),
+						{ ...data, members: [...data.members, current.user] },
+					];
+				}
+
+				return [
+					...acc,
+					{ ...current.community, members: [current.user] },
+				];
+			},
+			[],
+		);
+
+		return dataWithJoinedMembers[0];
+	}
+
+	const res = await db
+		.select()
+		.from(communities)
+		.where(eq(communities.id, communityId));
+
+	if (res.length === 0) {
 		throw ApiError.notFound().generic;
 	}
 
-	return res;
+	return res[0];
 };
 
 const getUserCommunities = async (

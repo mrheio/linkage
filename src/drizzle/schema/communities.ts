@@ -22,7 +22,9 @@ export const communities = pgTable('communities', {
 	owner_id: uuid('owner_id')
 		.notNull()
 		.references(() => users.id),
-	created_by_id: uuid('created_by_id').references(() => users.id),
+	created_by_id: uuid('created_by_id')
+		.notNull()
+		.references(() => users.id),
 });
 
 export const communitiesRelations = relations(communities, ({ one, many }) => ({
