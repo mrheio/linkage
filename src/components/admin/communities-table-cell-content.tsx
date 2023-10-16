@@ -3,6 +3,7 @@ import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useDeleteCommunity } from '~/hooks';
 import { useOverlays } from '~/providers';
 import { Community } from '~/types';
+import { msSinceEpochToDate } from '~/utils';
 
 type CommunityTableCellContentProps = {
 	community: Community;
@@ -20,11 +21,7 @@ const CommunitiesTableCellContent = (props: CommunityTableCellContentProps) => {
 			<div className="relative flex items-center justify-end gap-2">
 				<Tooltip content="Details">
 					<Button
-						onClick={() =>
-							communityDetailsModal.open(
-								JSON.parse(JSON.stringify(community)),
-							)
-						}
+						onClick={() => communityDetailsModal.open(community)}
 						isIconOnly
 						variant="light"
 					>
@@ -49,6 +46,10 @@ const CommunitiesTableCellContent = (props: CommunityTableCellContentProps) => {
 				</Tooltip>
 			</div>
 		);
+	}
+
+	if (columnKey === 'created_at') {
+		return msSinceEpochToDate(community[columnKey]);
 	}
 
 	return community[columnKey as keyof Community];

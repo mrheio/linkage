@@ -14,8 +14,7 @@ type HomeProps = {
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (
 	ctx,
 ) => {
-	const res = await postsService.getPosts();
-	const posts = JSON.parse(JSON.stringify(res));
+	const posts = await postsService.getPosts();
 
 	const token = ctx.req.cookies[CookieKey.AccessToken];
 

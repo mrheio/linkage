@@ -12,8 +12,7 @@ type AdminDashboardProps = {
 export const getServerSideProps: GetServerSideProps<
 	AdminDashboardProps
 > = async (ctx) => {
-	const res = await communitiesService.getCommunities();
-	const communities = JSON.parse(JSON.stringify(res));
+	const communities = await communitiesService.getCommunities();
 
 	return { props: { communities } };
 };

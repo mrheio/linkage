@@ -6,6 +6,7 @@ import {
 	ModalHeader,
 } from '@nextui-org/react';
 import { useOverlays } from '~/providers';
+import { msSinceEpochToDate } from '~/utils';
 
 const CommunityDetailsModal = () => {
 	const { communityDetailsModal } = useOverlays();
@@ -27,10 +28,18 @@ const CommunityDetailsModal = () => {
 						</ModalBody>
 						<ModalFooter className="flex flex-col">
 							<p>Slug: /{community?.slug}</p>
-							<p>Created At: {community?.created_at}</p>
-							<p>Updated At: {community?.updated_at}</p>
 							<p>
-								Deleted At: {community?.deleted_at ?? 'not yet'}
+								Created At:{' '}
+								{msSinceEpochToDate(community?.created_at)}
+							</p>
+							<p>
+								Updated At:{' '}
+								{msSinceEpochToDate(community?.updated_at)}
+							</p>
+							<p>
+								Deleted At:{' '}
+								{msSinceEpochToDate(community?.deleted_at) ??
+									'not yet'}
 							</p>
 							<p>Created by: {community?.created_by_id}</p>
 							<p>Owned by: {community?.owner_id}</p>

@@ -49,3 +49,11 @@ export const parseModelDates = <T>(data: WithTimestampsModel<T>) => {
 		deleted_at: data.deleted_at?.valueOf() ?? null,
 	};
 };
+
+export const msSinceEpochToDate = (ms?: number | null) => {
+	if (!ms) {
+		return null;
+	}
+
+	return new Date(ms).toLocaleString();
+};
