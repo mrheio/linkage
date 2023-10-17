@@ -46,7 +46,15 @@ class FetchBuilder {
 
 		if (!response.ok) {
 			if (response.status === HTTP_STATUS_CODE.UNAUTHORIZED) {
-				await fetch('/api/auth/refresh', { method: 'POST' });
+				const refreshRes = await fetch('/api/auth/refresh', {
+					method: 'POST',
+				});
+
+				// TODO: better not found case handling
+				if (refreshRes.status === HTTP_STATUS_CODE.NOT_FOUND) {
+					return window.location.reload();
+				}
+
 				return this.run();
 			}
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Config } from '../config';
+import { HTTP_STATUS_CODE } from './api/status-codes';
 import { ROUTES, isAdminRoute, isAuthRoute, isProtectedRoute } from './router';
 import { authService, usersService } from './services';
 import { jwtService } from './services/jwt.service';
@@ -81,6 +82,16 @@ const sessionMiddleware = async (
 		});
 
 		if (!refresh.ok) {
+			// TODO: better not found case handling
+			if (refresh.status === HTTP_STATUS_CODE.NOT_FOUND) {
+				const retry = NextResponse.redirect(new URL(request.url));
+
+				retry.cookies.delete(CookieKey.AccessToken);
+				retry.cookies.delete(CookieKey.RefreshToken);
+
+				return retry;
+			}
+
 			console.error('There was a problem when refreshing tokens');
 			return response;
 		}
