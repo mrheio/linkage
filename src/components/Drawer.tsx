@@ -19,7 +19,9 @@ const Drawer = (props: DrawerProps) => {
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
 			size="full"
-			className={`fixed ${position}-0 w-[60%] max-w-md`}
+			className={`fixed ${
+				position === 'left' ? 'left-0' : 'right-0'
+			} w-[60%] max-w-md`}
 			motionProps={{
 				variants: {
 					enter: {

@@ -24,7 +24,7 @@ const AdminDashboard = (
 
 	return (
 		<>
-			<div className="fixed left-0 top-0 z-40 h-screen w-[24%] max-w-xs p-12 shadow-none">
+			<div className="fixed left-0 top-0 z-40 hidden h-screen w-[24%] max-w-xs p-12 shadow-none xl:block">
 				<Button fullWidth onClick={communityModal.open}>
 					Create Community
 				</Button>

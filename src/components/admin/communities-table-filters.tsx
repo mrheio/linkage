@@ -7,7 +7,11 @@ import {
 	Input,
 	Selection,
 } from '@nextui-org/react';
-import { IconArrowBigDown, IconRefresh, IconSearch } from '@tabler/icons-react';
+import {
+	IconArrowBadgeDownFilled,
+	IconRefresh,
+	IconSearch,
+} from '@tabler/icons-react';
 import { ChangeEventHandler } from 'react';
 import { optionalColumns } from './utils';
 
@@ -36,7 +40,10 @@ const CommunitiesTableFilters = (props: CommunitiesTabFilters) => {
 			/>
 			<Dropdown>
 				<DropdownTrigger className="hidden sm:flex">
-					<Button endContent={<IconArrowBigDown />} variant="flat">
+					<Button
+						endContent={<IconArrowBadgeDownFilled />}
+						variant="flat"
+					>
 						Columns
 					</Button>
 				</DropdownTrigger>
